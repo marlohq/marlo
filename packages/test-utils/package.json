@@ -1,0 +1,11 @@
+{
+	"name": "@workspace/test-utils",
+	"private": true,
+	"devDependencies": {
+		"@workspace/core": "workspace:*",
+		"fake-indexeddb": "^6.0.0",
+		"gaxios": "^7.1.1",
+		"googleapis": "^156.0.0",
+		"vitest": "^3.0.9"
+	}
+}

@@ -1,0 +1,1 @@
+ALTER TABLE "MessageAttachment" ADD COLUMN "disposition" text;

@@ -1,0 +1,143 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Gmail History Test Fixture",
+	"description": "Schema for Gmail history API response fixtures used in tests",
+	"type": "object",
+	"required": ["history"],
+	"properties": {
+		"$schema": {
+			"description": "Reference to the schema file",
+			"type": "string"
+		},
+		"nextHistoryId": {
+			"description": "The history ID that should be returned from this response",
+			"type": ["string", "null"]
+		},
+		"history": {
+			"description": "List of history records in this response",
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"messagesAdded": {
+						"description": "Messages added in this history record",
+						"type": "array",
+						"items": {
+							"type": "object",
+							"required": ["message"],
+							"properties": {
+								"message": {
+									"type": "object",
+									"required": ["id", "threadId"],
+									"properties": {
+										"id": {
+											"description": "The immutable ID of the message",
+											"type": "string"
+										},
+										"threadId": {
+											"description": "The ID of the thread the message belongs to",
+											"type": "string"
+										},
+										"labelIds": {
+											"description": "List of IDs of labels applied to this message",
+											"type": "array",
+											"items": {
+												"type": "string"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"messagesDeleted": {
+						"description": "Messages deleted in this history record",
+						"type": "array",
+						"items": {
+							"type": "object",
+							"required": ["message"],
+							"properties": {
+								"message": {
+									"type": "object",
+									"required": ["id", "threadId"],
+									"properties": {
+										"id": {
+											"description": "The immutable ID of the message",
+											"type": "string"
+										},
+										"threadId": {
+											"description": "The ID of the thread the message belongs to",
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					},
+					"labelsAdded": {
+						"description": "Labels added to messages in this history record",
+						"type": "array",
+						"items": {
+							"type": "object",
+							"required": ["message", "labelIds"],
+							"properties": {
+								"message": {
+									"type": "object",
+									"required": ["id", "threadId"],
+									"properties": {
+										"id": {
+											"description": "The immutable ID of the message",
+											"type": "string"
+										},
+										"threadId": {
+											"description": "The ID of the thread the message belongs to",
+											"type": "string"
+										}
+									}
+								},
+								"labelIds": {
+									"description": "Label IDs added to the message",
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					},
+					"labelsRemoved": {
+						"description": "Labels removed from messages in this history record",
+						"type": "array",
+						"items": {
+							"type": "object",
+							"required": ["message", "labelIds"],
+							"properties": {
+								"message": {
+									"type": "object",
+									"required": ["id", "threadId"],
+									"properties": {
+										"id": {
+											"description": "The immutable ID of the message",
+											"type": "string"
+										},
+										"threadId": {
+											"description": "The ID of the thread the message belongs to",
+											"type": "string"
+										}
+									}
+								},
+								"labelIds": {
+									"description": "Label IDs removed from the message",
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

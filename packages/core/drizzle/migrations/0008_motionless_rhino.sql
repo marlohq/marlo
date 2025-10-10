@@ -1,0 +1,2 @@
+CREATE INDEX "SpaceThreadTag_threadId_idx" ON "SpaceThreadTag" USING btree ("threadId" text_ops);--> statement-breakpoint
+CREATE INDEX "ThreadCategory_threadId_idx" ON "ThreadCategory" USING btree ("threadId" text_ops);

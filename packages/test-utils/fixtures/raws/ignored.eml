@@ -1,0 +1,100 @@
+Return-Path: <reminder@superhuman.com>
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+    by mx.example.com (Postfix) with ESMTPS id 4B9C32005C
+    for <user@example.com>; Fri, 21 Mar 2025 08:45:12 -0700 (PDT)
+Authentication-Results: mx.example.com;
+    dkim=pass header.i=@superhuman.com header.s=s1 header.b=rRdskTv3;
+    spf=pass (example.com: domain of reminder@superhuman.com designates 209.85.221.54 as permitted sender) smtp.mailfrom=reminder@superhuman.com;
+    dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=superhuman.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+    d=superhuman.com; s=s1; t=1711031112;
+    h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+     to:to:cc:mime-version:mime-version:content-type:content-type;
+    bh=bFsJgthP/kZVPRjXCjQ1uBZtDr8IxlkFcPMiJXWlH0A=;
+    b=rRdskTv3XzYNfW4jC3Yjt3YtKQRMqGb4X6YsrTh+RgF/bVSUE7wZ8QQpK3NjGUP3
+     KJceuVDC/uWejbFAhwrR8XLVq59DK+oA2ZS6z+4kEJJ8eDyHKhnm8/XlRvFXPRjBl
+     H2KaX7mjDETIfkB9cLzr+dM7ZGvZRYzwvXe1vg5OJk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+    d=1e100.net; s=20230601; t=1711031112;
+    h=from:reply-to:subject:date:message-id:to:cc:mime-version:
+     content-type:x-gm-message-state:from:to:cc:subject:date:message-id:
+     reply-to;
+    bh=bFsJgthP/kZVPRjXCjQ1uBZtDr8IxlkFcPMiJXWlH0A=;
+    b=Vy4k3lj9BjzE+8JNhCsK/u6j8VKS4j8h0t5V4gQ68V3cS4eqaLbHYgpW2j/E5VCj
+     hd0fmkKBdDnjnxrHpG+o7p/wfx+Bj1NyWLs8Qwz8/kO1fDX44PjDKOmK71pQPaEhm
+     GXx/EzWPr78ywkUj9kTg+lnpO21DsejEMdKxgTfOg0=
+X-Gm-Message-State: AOJu0YzZk2IwmPUZAZfrzVCX6B2FZRMw/ooG5D9EqFgXUPWvzPTIBYfx
+    nHc+P9X/QFONrb1nnwJg3y7I
+X-Received: by 2002:a5d:4bcf:0:b0:21a:6c1:c1fa with SMTP id s15-20020a5d4bcf000000b0021a06c1c1famr13539450wrx.63.1711031112093;
+    Fri, 21 Mar 2025 08:45:12 -0700 (PDT)
+X-Superhuman-Id: 5kcmABgFnw6C4eVxkZYCBw
+Received: from smtp.superhuman.com (unknown [172.31.32.12])
+    by smtp.gmail.com with ESMTPSA id s15-20020a5d4bcf000000b0021a06c1c1famr13539450wrx.63.2025.03.21.08.45.11
+    for <user@example.com>
+    (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+    Fri, 21 Mar 2025 08:45:11 -0700 (PDT)
+From: Superhuman <reminder@superhuman.com>
+Reply-To: noreply@superhuman.com
+Content-Type: multipart/alternative; boundary="0000000000008f00e7060fc2bbc9"
+MIME-Version: 1.0
+Subject: Reminder: Follow up with Client about Project Timeline
+Message-ID: <CAESzQYB-V==OGEUkbDxn5O7U-m1WY26PfkbWD8G+qxsNs8HKbw@mail.gmail.com>
+Date: Fri, 21 Mar 2025 08:45:10 -0700
+To: user@example.com
+X-SES-Outgoing: 2025.03.21-209.85.221.54
+Feedback-ID: 1:account-id:superhuman:ses
+
+--0000000000008f00e7060fc2bbc9
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+REMINDER
+
+Follow up with Client about Project Timeline
+
+Due: Today, Mar 21, 2025 at 10:00 AM
+
+You can mark this reminder as done by visiting:
+https://superhuman.com/done/r/xyz123abc
+
+Sent from Superhuman (https://superhuman.com)
+
+--0000000000008f00e7060fc2bbc9
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=3D1=
+.0">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 20px; color: #333; }
+    .reminder-box { max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 8px; border: 1px solid #e1e1e1; }
+    .reminder-header { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 15px; }
+    .reminder-title { font-size: 20px; font-weight: 500; margin-bottom: 20px; }
+    .reminder-details { font-size: 15px; margin-bottom: 25px; color: #555; }
+    .reminder-action { margin-top: 30px; }
+    .button { display: inline-block; background-color: #5f42ff; color: white; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-weight: 500; }
+    .footer { margin-top: 40px; font-size: 12px; color: #999; text-align: center; }
+    .footer a { color: #5f42ff; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class=3D"reminder-box">
+    <div class=3D"reminder-header">REMINDER</div>
+    <div class=3D"reminder-title">Follow up with Client about Project Timeline</div>
+    <div class=3D"reminder-details">
+      Due: Today, Mar 21, 2025 at 10:00 AM
+    </div>
+    <div class=3D"reminder-action">
+      <a href=3D"https://superhuman.com/done/r/xyz123abc" class=3D"button">Mark as Done</a>
+    </div>
+    <div class=3D"footer">
+      Sent from <a href=3D"https://superhuman.com">Superhuman</a>
+    </div>
+  </div>
+</body>
+</html>
+
+--0000000000008f00e7060fc2bbc9--

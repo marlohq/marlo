@@ -1,0 +1,54 @@
+From: test@example.com
+To: user@example.com
+Subject: Nested Table Test Order
+Date: Wed, 28 Aug 2025 12:00:00 +0000
+Message-ID: <test-nested-table@example.com>
+Content-Type: multipart/alternative; boundary="boundary123"
+
+--boundary123
+Content-Type: text/plain; charset=UTF-8
+
+Order Total: $2,803.00
+
+--boundary123
+Content-Type: text/html; charset=UTF-8
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Confirmation</title>
+</head>
+<body>
+    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                <h1>Order Confirmation</h1>
+                
+                <!-- Nested table structure with pricing -->
+                <table class="billing-section" width="100%" border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td>
+                            <table class="amounts-table" width="100%" border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td class="label">Subtotal</td>
+                                    <td class="value"><nobr>$2,803.00</nobr></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Tax</td>
+                                    <td class="value"><nobr>$4.00</nobr></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Order Total</td>
+                                    <td class="value"><nobr>$2,807.00</nobr></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+
+--boundary123--

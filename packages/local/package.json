@@ -1,0 +1,32 @@
+{
+	"name": "@workspace/local",
+	"type": "module",
+	"exports": {
+		"./*": "./src/*"
+	},
+	"scripts": {
+		"dev:types": "tsc --noEmit --watch",
+		"check:types": "tsc --noEmit",
+		"test": "vitest --run",
+		"test:watch": "vitest --watch"
+	},
+	"dependencies": {
+		"@types/deep-diff": "^1.0.5",
+		"@workspace/sync-data": "workspace:*",
+		"deep-diff": "^1.0.2",
+		"dexie": "^4.0.11",
+		"dexie-react-hooks": "^1.1.7",
+		"jose": "^6.0.12",
+		"js-cookie": "^3.0.5",
+		"react": "^19.0.0"
+	},
+	"devDependencies": {
+		"@workspace/core": "workspace:*",
+		"@types/js-cookie": "^3.0.6",
+		"@types/react": "^19.0.0",
+		"@workspace/test-utils": "workspace:*",
+		"happy-dom": "^18.0.1",
+		"vite": "^7.1.2",
+		"vitest": "^3.0.9"
+	}
+}

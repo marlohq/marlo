@@ -1,0 +1,133 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: marlo-postgres
+    environment:
+      POSTGRES_USER: magicthing
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: magicthing
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U magicthing']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: marlo-redis
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+    container_name: marlo-web
+    ports:
+      - '3000:3000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://magicthing:password@postgres:5432/magicthing
+      - REDIS_URL=redis://redis:6379
+      # Web app OAuth and Authentication
+      - OAUTH_ENCRYPTION_KEY=${OAUTH_ENCRYPTION_KEY}
+      - AUTH_SECRET=${AUTH_SECRET}
+      - SYNC_AUTH_SECRET=${SYNC_AUTH_SECRET}
+      # Web app Google configuration
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_GMAIL_TOPIC=${GOOGLE_GMAIL_TOPIC}
+      # Web app Stripe configuration
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_SIGNING_SECRET=${STRIPE_SIGNING_SECRET}
+      - STRIPE_DEFAULT_PRICE_ID=${STRIPE_DEFAULT_PRICE_ID}
+      # Web app third-party services
+      - SUBLIME_API_KEY=${SUBLIME_API_KEY}
+      # Web app desktop and admin
+      - GH_FETCH_RELEASE_TOKEN=${GH_FETCH_RELEASE_TOKEN}
+      - ADMIN_API_KEY=${ADMIN_API_KEY}
+      # Web app npm registry
+      - NPM_TASKFORCESH_TOKEN=${NPM_TASKFORCESH_TOKEN:-}
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  sync:
+    build:
+      context: .
+      dockerfile: ./apps/sync/Dockerfile
+    container_name: marlo-sync
+    ports:
+      - '3001:3001'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://magicthing:password@postgres:5432/magicthing
+      - REDIS_URL=redis://redis:6379
+      # Sync service authentication
+      - SYNC_AUTH_SECRET=${SYNC_AUTH_SECRET}
+      # Sync service database
+      - DIRECT_DATABASE_URL=postgresql://magicthing:password@postgres:5432/magicthing
+      # Sync service npm registry
+      - NPM_TASKFORCESH_TOKEN=${NPM_TASKFORCESH_TOKEN:-}
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3001/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  mail-ingester:
+    build:
+      context: .
+      dockerfile: ./apps/mail-ingester/Dockerfile
+    container_name: marlo-mail-ingester
+    ports:
+      - '3002:3002'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://magicthing:password@postgres:5432/magicthing
+      - REDIS_URL=redis://redis:6379
+      # Mail ingester Bull Board authentication
+      - BULL_BOARD_USERNAME=${BULL_BOARD_USERNAME}
+      - BULL_BOARD_PASSWORD=${BULL_BOARD_PASSWORD}
+      # Mail ingester Google Service Account
+      - GOOGLE_SERVICE_ACCOUNT=${GOOGLE_SERVICE_ACCOUNT}
+      # Mail ingester npm registry
+      - NPM_TASKFORCESH_TOKEN=${NPM_TASKFORCESH_TOKEN:-}
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3002/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres-data:
+  redis-data:

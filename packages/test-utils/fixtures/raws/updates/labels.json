@@ -1,0 +1,17 @@
+{
+	"INBOX": {
+		"id": "INBOX",
+		"name": "INBOX",
+		"type": "system"
+	},
+	"SPAM": {
+		"id": "SPAM",
+		"name": "SPAM",
+		"type": "system"
+	},
+	"TRASH": {
+		"id": "TRASH",
+		"name": "TRASH",
+		"type": "system"
+	}
+}

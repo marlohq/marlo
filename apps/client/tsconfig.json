@@ -1,0 +1,14 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"jsx": "react-jsx",
+		"jsxImportSource": "react",
+		"types": [
+			"../../apps/web/src/astro-types.d.ts",
+			"../../packages/core/src/electron-types.d.ts",
+			"../../packages/local/src/dexie-types.d.ts",
+			"vite/client",
+			"@total-typescript/ts-reset"
+		]
+	}
+}

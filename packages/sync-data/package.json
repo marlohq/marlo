@@ -1,0 +1,15 @@
+{
+	"name": "@workspace/sync-data",
+	"type": "module",
+	"exports": {
+		"./*": "./src/*"
+	},
+	"scripts": {
+		"dev:types": "tsc --noEmit --watch",
+		"check:types": "tsc --noEmit"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"@workspace/core": "workspace:*"
+	}
+}

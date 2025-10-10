@@ -1,0 +1,52 @@
+{
+	"name": "@workspace/web",
+	"type": "module",
+	"engines": {
+		"node": "22"
+	},
+	"scripts": {
+		"astro": "astro",
+		"dev": "astro dev",
+		"dev:types": "pnpm check:types --watch --noSync",
+		"build": "NODE_OPTIONS=--max-old-space-size=4096 astro build",
+		"preview": "astro preview",
+		"sync:types": "astro sync",
+		"check:types": "cross-env NODE_OPTIONS=--max-old-space-size=4096 astro check --preserveWatchOutput --minimumSeverity warning",
+		"test": "vitest --run",
+		"test:watch": "vitest --watch"
+	},
+	"dependencies": {
+		"@workspace/client": "workspace:*",
+		"@alloc/quick-lru": "^5.2.0",
+		"@astrojs/check": "^0.9.4",
+		"@astrojs/node": "^9.4.1",
+		"@astrojs/react": "^4.3.0",
+		"@astrojs/tailwind": "^6.0.0",
+		"@fontsource-variable/inter": "^5.1.1",
+		"@orpc/server": "^1.8.1",
+		"@sentry/node": "^10.5.0",
+		"@types/react": "^19.0.8",
+		"@types/react-dom": "^19.0.3",
+		"@workspace/ai": "workspace:*",
+		"@workspace/backend": "workspace:*",
+		"@workspace/core": "workspace:*",
+		"@workspace/google": "workspace:*",
+		"@workspace/mcp": "workspace:*",
+		"@workspace/ui": "workspace:*",
+		"ai": "^5.0.0",
+		"arctic": "^3.7.0",
+		"astro": "^5.5.3",
+		"es-toolkit": "^1.31.0",
+		"jose": "^6.0.12",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"stripe": "^18.0.0",
+		"tailwindcss": "^3.4.17",
+		"zod": "^3.24.2"
+	},
+	"devDependencies": {
+		"@workspace/test-utils": "workspace:*",
+		"roarr": "^7.21.1",
+		"vitest": "^3.0.9"
+	}
+}

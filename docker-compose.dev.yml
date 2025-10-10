@@ -1,0 +1,130 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: marlo-postgres-dev
+    environment:
+      POSTGRES_USER: magicthing
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: magicthing
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: marlo-pgadmin-dev
+    depends_on:
+      - postgres
+    ports:
+      - '5050:80'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: marlo-redis-dev
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-dev-data:/data
+
+  web:
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile.dev
+    container_name: marlo-web-dev
+    ports:
+      - '3000:3000'
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://magicthing:password@postgres:5432/magicthing
+      - REDIS_URL=redis://redis:6379
+      # Web app OAuth and Authentication
+      - OAUTH_ENCRYPTION_KEY=${OAUTH_ENCRYPTION_KEY}
+      - AUTH_SECRET=${AUTH_SECRET}
+      - SYNC_AUTH_SECRET=${SYNC_AUTH_SECRET}
+      # Web app Google configuration
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_GMAIL_TOPIC=${GOOGLE_GMAIL_TOPIC}
+      # Web app Stripe configuration
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_SIGNING_SECRET=${STRIPE_SIGNING_SECRET}
+      - STRIPE_DEFAULT_PRICE_ID=${STRIPE_DEFAULT_PRICE_ID}
+      # Web app third-party services
+      - SUBLIME_API_KEY=${SUBLIME_API_KEY}
+      # Web app desktop and admin
+      - GH_FETCH_RELEASE_TOKEN=${GH_FETCH_RELEASE_TOKEN}
+      - ADMIN_API_KEY=${ADMIN_API_KEY}
+      # Web app npm registry
+      - NPM_TASKFORCESH_TOKEN=${NPM_TASKFORCESH_TOKEN:-}
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/web/node_modules
+    restart: unless-stopped
+
+  sync:
+    build:
+      context: .
+      dockerfile: ./apps/sync/Dockerfile.dev
+    container_name: marlo-sync-dev
+    ports:
+      - '3001:3001'
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://magicthing:password@postgres:5432/magicthing
+      - REDIS_URL=redis://redis:6379
+      # Sync service authentication
+      - SYNC_AUTH_SECRET=${SYNC_AUTH_SECRET}
+      # Sync service database
+      - DIRECT_DATABASE_URL=postgresql://magicthing:password@postgres:5432/magicthing
+      # Sync service npm registry
+      - NPM_TASKFORCESH_TOKEN=${NPM_TASKFORCESH_TOKEN:-}
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/sync/node_modules
+    restart: unless-stopped
+
+  mail-ingester:
+    build:
+      context: .
+      dockerfile: ./apps/mail-ingester/Dockerfile.dev
+    container_name: marlo-mail-ingester-dev
+    ports:
+      - '3002:3002'
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://magicthing:password@postgres:5432/magicthing
+      - REDIS_URL=redis://redis:6379
+      # Mail ingester Bull Board authentication
+      - BULL_BOARD_USERNAME=${BULL_BOARD_USERNAME}
+      - BULL_BOARD_PASSWORD=${BULL_BOARD_PASSWORD}
+      # Mail ingester Google Service Account
+      - GOOGLE_SERVICE_ACCOUNT=${GOOGLE_SERVICE_ACCOUNT}
+      # Mail ingester npm registry
+      - NPM_TASKFORCESH_TOKEN=${NPM_TASKFORCESH_TOKEN:-}
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/mail-ingester/node_modules
+    restart: unless-stopped
+
+volumes:
+  postgres-dev-data:
+  redis-dev-data:

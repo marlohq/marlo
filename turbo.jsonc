@@ -1,0 +1,74 @@
+// Turborepo Configuration
+// https://turborepo.com/docs/reference/configuration
+//
+// Quick syntax guide:
+// `//`        -- The root workspace
+// `pkg#task`  -- The specific task in the specific package
+// `//#task`   -- The specific task in the root workspace
+// `^task`     -- Describes a dependency relationship between tasks.
+{
+	"$schema": "https://turbo.build/schema.json",
+	"globalEnv": [
+		"ADMIN_API_KEY",
+		"ANTHROPIC_API_KEY",
+		"OPENAI_API_KEY",
+		"AWS_ACCESS_KEY_ID",
+		"AWS_SECRET_ACCESS_KEY",
+		"BUCKET_NAME",
+		"DATABASE_URL",
+		"DIRECT_DATABASE_URL",
+		"OAUTH_ENCRYPTION_KEY",
+		"GOOGLE_CLIENT_ID",
+		"GOOGLE_CLIENT_SECRET",
+		"GOOGLE_GENERATIVE_AI_API_KEY",
+		"GOOGLE_SERVICE_ACCOUNT",
+		"GOOGLE_GMAIL_TOPIC",
+		"GROQ_API_KEY",
+		"AUTH_SECRET",
+		"REDIS_URL",
+		"ROARR_LOG",
+		"PUBLIC_SYNC_ENGINE_URL",
+		"SYNC_AUTH_SECRET",
+		"STRIPE_SECRET_KEY",
+		"STRIPE_SIGNING_SECRET",
+		"STRIPE_DEFAULT_PRICE_ID",
+		"BULL_BOARD_USERNAME",
+		"BULL_BOARD_PASSWORD",
+		"BULLMQ_QUEUE_PREFIX",
+		"NPM_TASKFORCESH_TOKEN",
+		"GH_FETCH_RELEASE_TOKEN"
+	],
+	"tasks": {
+		"dev": {
+			"persistent": true,
+			"cache": false
+		},
+		"dev:desktop": {
+			"persistent": true,
+			"cache": false
+		},
+		"dev:electron": {
+			"persistent": true,
+			"cache": false
+		},
+		"dev:types": {
+			"persistent": true,
+			"cache": false
+		},
+		"sync:types": {},
+		"build": {},
+		"build:desktop": {},
+		"check:types": {
+			"dependsOn": ["@workspace/web#sync:types", "^check:types"],
+			"outputLogs": "errors-only"
+		},
+		"//#check:types:tsc": {
+			"outputLogs": "errors-only"
+		},
+		"//#format:lint": {},
+		"//#format:style": {
+			"dependsOn": ["format:lint"]
+		},
+		"test": {}
+	}
+}

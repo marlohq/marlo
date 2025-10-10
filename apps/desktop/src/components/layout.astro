@@ -1,0 +1,59 @@
+---
+import '../chrome.css';
+import '@fontsource-variable/inter';
+import '@workspace/client/styles';
+---
+
+<html lang="en" class="bg-[#FAFAFA] text-neutral-900">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Marlo</title>
+	</head>
+	<body class="text-base">
+		<slot />
+
+		<script>
+			import { ipcEvents } from '../lib/ipc.js';
+			import { SESSION_COOKIE_NAME, REFRESH_COOKIE_NAME } from '@workspace/core/cookies.js';
+
+			ipcEvents.addEventListener('login', async (event) => {
+				const session = event.data.session;
+				const refresh = event.data.refresh;
+
+				if (!session) {
+					console.error('No session token received');
+					return;
+				}
+
+				try {
+					const authSyncResult = await window.electronAPI.authSync(session);
+
+					if (!authSyncResult.success) {
+						console.error('Failed to get sync JWT:', authSyncResult.error);
+						return;
+					}
+
+					const syncjwt = authSyncResult.data?.syncjwt;
+
+					if (!syncjwt) {
+						console.error('Failed to get sync JWT');
+						return;
+					}
+
+					// Store all tokens including the syncjwt
+					await window.electronAPI.setAuthTokens({
+						session: session,
+						syncjwt: syncjwt,
+						refresh: refresh,
+					});
+
+					// Redirect to main app
+					window.location.href = '/';
+				} catch (error) {
+					console.error('Error during login process:', error);
+				}
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,13 @@
+---
+import LoginComponent from '../components/Login.tsx';
+import Layout from '../components/layout.astro';
+---
+
+<Layout>
+	<LoginComponent
+		client:only="react"
+		state="active"
+		authUrl=`/auth/google/authorize?stage=login&platform=desktop`
+		target="_blank"
+	/>
+</Layout>

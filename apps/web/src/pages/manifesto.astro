@@ -1,0 +1,259 @@
+---
+import '@workspace/client/styles';
+import FAQ from '../components/FAQ.astro';
+import * as manifesto from '../content/manifesto.md';
+import footer from '../images/banner-footer.png';
+import favicon from '../images/favicon.webp';
+
+const { Content, frontmatter } = manifesto;
+---
+
+<html lang="en" class="bg-[#FAFAFA]">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="shortcut icon" href={favicon.src} />
+		<link rel="icon" href={favicon.src} type="image/webp" sizes="32x32" />
+
+		<!-- HTML Meta Tags -->
+		<title>{frontmatter.title}</title>
+		<meta name="description" content={frontmatter.description} />
+
+		<!-- Facebook Meta Tags -->
+		<meta property="og:url" content="https://marlo.so/" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={frontmatter.title} />
+		<meta property="og:description" content={frontmatter.description} />
+		<meta property="og:image" content={`${Astro.url.origin}/assets/social-image.jpg`} />
+
+		<!-- Twitter Meta Tags -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta property="twitter:domain" content="marlo.so" />
+		<meta property="twitter:url" content="https://marlo.so/" />
+		<meta name="twitter:title" content={frontmatter.title} />
+		<meta name="twitter:description" content={frontmatter.description} />
+		<meta name="twitter:image" content={`${Astro.url.origin}/assets/social-image.jpg`} />
+	</head>
+	<body class="px-6 sm:px-10">
+		<header class="relative flex items-center justify-between gap-4 py-6 sm:pt-10">
+			<div class="mx-auto flex w-full max-w-screen-sm items-center justify-between gap-4">
+				<a href="/" class="flex items-center gap-2 text-xl font-medium text-neutral-900">
+					<img src="/logom.jpg" alt="Marlo" class="size-8" />
+				</a>
+				<a
+					id="login"
+					href="/auth/google/authorize?stage=login"
+					class="group flex items-center gap-1 text-base text-neutral-500 hover:text-neutral-900"
+				>
+					<p class="">Existing User? Login</p>
+				</a>
+			</div>
+		</header>
+
+		<div class="mx-auto w-full max-w-screen-sm">
+			<div class="fade-slide-blur prose mx-auto pb-8 text-justify leading-7">
+				<h1 class="pt-2 text-2xl font-semibold text-neutral-900">{manifesto.frontmatter.title}</h1>
+				<Content />
+				<p class="flex items-center justify-between gap-1 text-neutral-500">
+					<span class="font-semibold text-neutral-900">— Fred K. Schott</span>
+					<!-- <span>Published May 13, 2025 (Updated: August 6, 2025)</span> -->
+				</p>
+			</div>
+		</div>
+
+		<div class="mx-auto w-full max-w-screen-sm px-4 py-12 sm:px-0 sm:py-16">
+			<h2 id="faq" class="mb-4 text-left font-serif text-[22px] text-neutral-700 sm:text-2xl">
+				Frequently Asked Questions
+			</h2>
+			<div class="space-y-3">
+				<FAQ question="What is Marlo?">
+					Marlo is a new kind of email app designed for people who get a lot of email.
+				</FAQ>
+				<FAQ question="Who made Marlo?">
+					Marlo is a new project from the creators of <a
+						href="https://astro.build"
+						target="_blank"
+						class="font-medium text-neutral-950 hover:underline"
+					>
+						Astro
+					</a>. It is currently being worked on by <a
+						href="https://x.com/fredkschott"
+						target="_blank"
+						class="font-medium text-neutral-950 hover:underline"
+						set:text="@fredkschott"
+					/>
+					<a
+						href="https://x.com/matthewcp"
+						target="_blank"
+						class="font-medium text-neutral-950 hover:underline"
+						set:text="@matthewcp"
+					/> Erika and <a
+						href="https://x.com/ians_studio"
+						target="_blank"
+						class="font-medium text-neutral-950 hover:underline"
+						set:text="@ians_studio"
+					/>.
+				</FAQ>
+				<FAQ question="Which email providers does Marlo support?">
+					Marlo currently supports Gmail and Google Workspace accounts. Support for Microsoft
+					Outlook and custom @marlo.so email addresses is not yet available.
+				</FAQ>
+				<FAQ question="Is Marlo open source software?">
+					Not currently, but we would love to open source some or all of Marlo in the future. We
+					love OSS and are a team of full-time OSS maintainers, having previously worked together on <a
+						href="https://astro.build"
+						target="_blank"
+						class="font-medium text-neutral-950 hover:underline"
+						set:text="Astro"
+					/>, a popular open source web framework with millions of downloads.
+				</FAQ>
+				<FAQ question="How can I get access to Marlo?">
+					Marlo is currently invitation only. The only way to get access is through the waitlist, or
+					via referral from an existing user. You will be notified via email when your invitation is
+					ready.
+				</FAQ>
+				<FAQ question="How much does Marlo cost?">
+					Marlo is a paid, premium email client. We are still finalizing our pricing and will
+					publish more as soon as we have it.
+				</FAQ>
+			</div>
+		</div>
+
+		<img
+			src={footer.src}
+			alt="Screenshot of Marlo, showing an example inbox with various email threads."
+			loading="lazy"
+			decoding="async"
+			class="fade-slide-blur max-w-screen bottom-0 z-20 -mt-4 sm:mx-auto sm:w-screen sm:max-w-screen-md"
+		/>
+
+		<div
+			class="h-[136px] border-t border-neutral-200 bg-gradient-to-b from-white to-neutral-100 sm:hidden"
+		>
+		</div>
+	</body>
+</html>
+
+<script>
+	document.addEventListener('keydown', function (event) {
+		if (event.key === 'L' || event.key === 'l') {
+			const activeElement = document.activeElement;
+			const isEditableField =
+				activeElement?.tagName === 'INPUT' ||
+				activeElement?.tagName === 'TEXTAREA' ||
+				(activeElement instanceof HTMLElement && activeElement.isContentEditable);
+
+			// Only trigger redirect if not typing in an input field
+			if (!isEditableField) {
+				event.preventDefault();
+				const loginEl = document.getElementById('login') as HTMLAnchorElement;
+				window.location.href = loginEl?.href;
+			}
+		}
+	});
+</script>
+
+<style is:global>
+	img.fade-slide-blur {
+		opacity: 0;
+		animation: fadeSlideBlurFooter 1200ms ease-out forwards;
+		animation-delay: 1s;
+	}
+	.fade-slide-blur > * {
+		opacity: 0;
+		animation: fadeSlideBlur 600ms ease-out forwards;
+	}
+
+	.fade-slide-blur > *:nth-child(1) {
+		animation-delay: 0s;
+	}
+
+	.fade-slide-blur > *:nth-child(2) {
+		animation-delay: 0.05s;
+	}
+
+	.fade-slide-blur > *:nth-child(3) {
+		animation-delay: 0.1s;
+	}
+
+	.fade-slide-blur > *:nth-child(4) {
+		animation-delay: 0.15s;
+	}
+
+	.fade-slide-blur > *:nth-child(5) {
+		animation-delay: 0.2s;
+	}
+
+	.fade-slide-blur > *:nth-child(6) {
+		animation-delay: 0.25s;
+	}
+
+	.fade-slide-blur > *:nth-child(7) {
+		animation-delay: 0.3s;
+	}
+
+	.fade-slide-blur > *:nth-child(8) {
+		animation-delay: 0.35s;
+	}
+
+	.fade-slide-blur > *:nth-child(9) {
+		animation-delay: 0.4s;
+	}
+
+	.fade-slide-blur > *:nth-child(10) {
+		animation-delay: 0.45s;
+	}
+
+	.fade-slide-blur > *:nth-child(11) {
+		animation-delay: 0.5s;
+	}
+
+	.fade-slide-blur > *:nth-child(12) {
+		animation-delay: 0.55s;
+	}
+
+	.fade-slide-blur > *:nth-child(13) {
+		animation-delay: 0.6s;
+	}
+
+	.fade-slide-blur > *:nth-child(14) {
+		animation-delay: 0.65s;
+	}
+
+	.fade-slide-blur > *:nth-child(15) {
+		animation-delay: 0.7s;
+	}
+
+	@keyframes fadeSlideBlur {
+		0% {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		100% {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+	@keyframes fadeSlideBlurFooter {
+		0% {
+			opacity: 0;
+			transform: translateY(10px) translateX(-2%);
+		}
+		100% {
+			opacity: 1;
+			transform: translateY(0) translateX(-2%);
+		}
+	}
+	@media (max-width: 640px) {
+		@keyframes fadeSlideBlurFooter {
+			0% {
+				opacity: 0;
+				transform: translateY(10px) translateX(0%);
+			}
+			100% {
+				opacity: 1;
+				transform: translateY(0) translateX(0%);
+			}
+		}
+	}
+</style>

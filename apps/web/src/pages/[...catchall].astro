@@ -1,0 +1,50 @@
+---
+import { App } from '@workspace/client/App';
+import { db } from '@workspace/core/drizzle.js';
+import { FEATURE_DESKTOP_DOWNLOADS_ENABLED, FEATURE_STRIPE_ENABLED } from '../env.ts';
+import favicon from '../images/favicon.webp';
+import { createSyncJWTAndSetCookie, setExpectedSessionStateCookie } from '../lib/auth.ts';
+import { createSetupCheckoutSession } from '../lib/stripe.ts';
+import '@workspace/client/styles';
+
+export const prerender = false;
+
+const currentAccount = await Astro.locals.currentAccount();
+if (!currentAccount && Astro.url.pathname !== '/') {
+	return Astro.redirect('/');
+}
+if (!currentAccount) {
+	return Astro.rewrite('/homepage');
+}
+if (FEATURE_STRIPE_ENABLED && currentAccount.user.status === 'INACTIVE') {
+	// If user has never had a subscription, redirect to Stripe checkout
+	if (currentAccount.user.subscriptionData === null) {
+		const checkoutUrl = await createSetupCheckoutSession(currentAccount, Astro.url);
+		return Astro.redirect(checkoutUrl);
+	}
+	// If user previously had a subscription, redirect to inactive page
+	return Astro.redirect('/inactive');
+}
+
+setExpectedSessionStateCookie({ cookies: Astro.cookies }, 'active');
+await createSyncJWTAndSetCookie(
+	{ cookies: Astro.cookies },
+	currentAccount.id,
+	currentAccount.userId,
+	currentAccount.email,
+);
+---
+
+<html lang="en" class="bg-[#f6f6f6] text-neutral-900">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Marlo</title>
+		<link rel="shortcut icon" href={favicon.src} />
+		<link rel="icon" href={favicon.src} type="image/webp" sizes="32x32" />
+		<meta name="robots" content="noindex" />
+	</head>
+	<body class="text-base">
+		<App client:only="react" desktopDownloadsEnabled={FEATURE_DESKTOP_DOWNLOADS_ENABLED} />
+	</body>
+</html>

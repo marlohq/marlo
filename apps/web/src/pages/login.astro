@@ -1,0 +1,8 @@
+---
+const currentAccount = await Astro.locals.currentAccount();
+if (currentAccount) {
+	return Astro.redirect('/');
+} else {
+	return Astro.redirect('/auth/google/authorize?stage=login&prompt=select_account');
+}
+---

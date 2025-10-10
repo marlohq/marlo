@@ -1,0 +1,54 @@
+# build output
+dist/
+dist-electron/
+dist-astro/
+
+# test results
+test-results/
+playwright-report/
+.tap/
+
+# caches
+.cache/
+.turbo/
+
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+logs/
+vector/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables
+# .env
+# .env.production
+.env.local
+
+# macOS-specific files
+.DS_Store
+
+# local config
+.idea/
+.vscode/settings.json
+.vercel/
+.venv
+.pscale.yml
+*.code-workspace
+
+# other
+CLAUDE.md
+chromadb
+chroma.log
+apps/web/.env
+*.tsbuildinfo
+apps/web/certs/localhost-key.pem
+apps/web/certs/localhost.pem
+apps/web/zero-schema.json
+bin

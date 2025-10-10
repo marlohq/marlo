@@ -1,0 +1,36 @@
+# Vector is our observability data pipeline for production.
+# It only runs in production (see ./scripts/start.sh).
+
+data_dir = "./vector/data"
+
+[sources.output]
+type = "file"
+include = ["./vector/logs/*.json"]
+fingerprint = { lines = 10, strategy = "checksum", ignored_header_bytes = 0 }
+
+[transforms.log_json]
+  type = "remap"
+  inputs = ["output"]
+  source = '''
+  if (exists(.message)) {
+    parsedMessage, errMessage = parse_json(.message)
+    if errMessage == null {
+      . = parsedMessage
+    }
+  }
+  if (exists(.message)) {
+    parsedDeepMessage, errDeepMessage = parse_json(.message)
+    if errDeepMessage == null {
+      .parsed = parsedDeepMessage
+    }
+  }
+  if (exists(.context.logLevel)) {
+    .level = .context.logLevel
+  }
+  '''
+
+[sinks.axiom]
+type = "axiom"
+inputs = ["log_json"]
+dataset = "${AXIOM_DATASET:-marlo-sync}"
+token = "${AXIOM_TOKEN_SYNC}"

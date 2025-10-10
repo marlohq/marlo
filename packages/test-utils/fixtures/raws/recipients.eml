@@ -1,0 +1,33 @@
+Return-Path: <sender@example.com>
+Delivered-To: recipient1@example.com
+Received: from mail.example.com (mail.example.com [192.168.1.100])
+    by mx.example.com (Postfix) with ESMTP id 12345ABCDE
+    for <recipient1@example.com>; Wed, 28 May 2025 10:30:45 +0000 (UTC)
+Message-ID: <550e8400-e29b-41d4-a716-446655440000@example.com>
+Date: Wed, 28 May 2025 10:30:42 +0000
+From: John Doe <sender@example.com>
+Reply-To: noreply@example.com
+To: Alice Smith <recipient1@example.com>, Bob Johnson <recipient2@example.com>
+Cc: Charlie Brown <cc1@example.com>, Diana Prince <cc2@example.com>
+Bcc: Eve Adams <bcc1@example.com>, Frank Miller <bcc2@example.com>
+Subject: Test Email with Multiple Recipients
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+Hello everyone,
+
+This is a test email sent to multiple recipients including TO, CC, and BCC fields.
+
+The primary recipients are Alice and Bob.
+Charlie and Diana are copied on this message.
+Eve and Frank are blind copied (though they won't see this in the raw email headers when delivered to TO/CC recipients).
+
+Best regards,
+John Doe
+
+--
+John Doe
+Example Company
+sender@example.com
++1-555-123-4567

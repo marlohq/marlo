@@ -1,0 +1,17 @@
+{
+	"name": "@workspace/categories",
+	"type": "module",
+	"exports": {
+		"./*": "./src/*"
+	},
+	"scripts": {
+		"dev:types": "tsc --noEmit --watch",
+		"check:types": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@workspace/ai": "workspace:*",
+		"@workspace/core": "workspace:*",
+		"arctic": "^3.7.0",
+		"es-toolkit": "^1.31.0"
+	}
+}

@@ -1,0 +1,29 @@
+{
+	"name": "@workspace/mail-ingester",
+	"type": "module",
+	"engines": {
+		"node": "22"
+	},
+	"scripts": {
+		"start": "tsx src/entry.ts",
+		"dev": "cross-env NODE_ENV=development tsx watch src/entry.ts",
+		"build": "echo \"No build specified, but build script is required for Railway.\"",
+		"check:types": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@hono/node-server": "^1.13.8",
+		"@oslojs/crypto": "^1.0.1",
+		"@oslojs/encoding": "^1.1.0",
+		"@workspace/categories": "workspace:*",
+		"@workspace/core": "workspace:*",
+		"@workspace/google": "workspace:*",
+		"@workspace/ai": "workspace:*",
+		"@workspace/backend": "workspace:*",
+		"es-toolkit": "^1.31.0",
+		"hono": "^4.7.10",
+		"ioredis": "^5.6.1",
+		"@bull-board/api": "^6.9.6",
+		"@bull-board/hono": "^6.9.6"
+	},
+	"devDependencies": {}
+}

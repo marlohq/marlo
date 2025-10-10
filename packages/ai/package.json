@@ -1,0 +1,31 @@
+{
+	"name": "@workspace/ai",
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"scripts": {
+		"dev:types": "tsc --noEmit --watch",
+		"dev:eval": "evalite watch",
+		"test:generate:data": "tsx scripts/generate-data.ts",
+		"test:generate:report": "tsx scripts/generate-report.ts",
+		"test:snapshot": "tsx scripts/snapshot.ts",
+		"test:compare": "tsx scripts/compare.ts",
+		"check:types": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@ai-sdk/google": "^2.0.0",
+		"@ai-sdk/openai": "^2.0.0",
+		"@workspace/core": "workspace:*",
+		"ai": "^5.0.0",
+		"collapse-white-space": "^2.1.0",
+		"htmlparser2": "^10.0.0",
+		"sanitize-html": "^2.14.0",
+		"zod": "^3.24.2"
+	},
+	"devDependencies": {
+		"@types/sanitize-html": "^2.13.0",
+		"chalk": "^5.4.1",
+		"diff": "^8.0.2"
+	}
+}

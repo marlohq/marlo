@@ -1,0 +1,41 @@
+---
+import '@fontsource-variable/inter';
+import favicon from '../images/favicon.webp';
+import '@workspace/client/styles';
+
+const dateOptions: object = {
+	year: 'numeric',
+	month: 'long',
+	day: 'numeric',
+};
+
+const formattedPublishDate = new Date(Astro.props.frontmatter.updated_date).toLocaleDateString(
+	'en-US',
+	dateOptions,
+);
+---
+
+<html lang="en" class="text-base text-slate-900">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Marlo</title>
+		<link rel="shortcut icon" href={favicon.src} />
+		<link rel="icon" href={favicon.src} type="image/webp" sizes="32x32" />
+		<meta name="robots" content="noindex" />
+	</head>
+	<body class="">
+		<div class="fixed inset-0 -z-10 bg-gradient-to-br from-white to-neutral-300"></div>
+		<div class="flex items-center justify-center">
+			<div class="prose flex max-w-screen-md flex-col px-8 py-16">
+				<div class="text-xl font-medium leading-[2.75rem]">
+					<h1>{Astro.props.frontmatter.seo.title ?? 'Legal'}</h1>
+				</div>
+				<p class="text-lg">
+					Last updated: {formattedPublishDate}
+				</p>
+				<div class="prose text-lg" set:html={Astro.props.compiledContent()} />
+			</div>
+		</div>
+	</body>
+</html>

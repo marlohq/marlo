@@ -1,0 +1,2 @@
+ALTER TABLE "Contact" ALTER COLUMN "type" DROP DEFAULT;--> statement-breakpoint
+CREATE UNIQUE INDEX "Contact_accountId_email_acquaintance_key" ON "Contact" USING btree ("accountId" text_ops,"email" text_ops) WHERE "Contact"."type" = 'acquaintance';

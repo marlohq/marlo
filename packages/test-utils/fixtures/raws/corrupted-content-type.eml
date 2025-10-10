@@ -1,0 +1,21 @@
+From: sender@example.com
+To: recipient@example.com
+Subject: Test Email with Corrupted Content-Type in Attachment
+Date: Wed, 20 Mar 2025 12:00:00 +0000
+Content-Type: multipart/mixed; boundary="b1_863f0c113fb091d73b161e4f1d8a371e"
+Message-ID: <im-an-email-with-corrupted-attachments-type@mail.gmail.com>
+
+--b1_863f0c113fb091d73b161e4f1d8a371e
+Content-Type: text/plain; format=flowed; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+
+Hello! I'm an email with a corrupted content type header on one of my attachments.
+
+--b1_863f0c113fb091d73b161e4f1d8a371e
+Content-Type: ; name="a7cdb5282f58fe839b5083ea843dca8d"
+Content-Transfer-Encoding: base64
+Content-ID: <a7cdb5282f58fe839b5083ea843dca8d>
+
+SGVsbG8gdG8gd2hvZXZlciBpcyByZWFkaW5nIHRoaXMgLSBlcmlrYSA6KQ==
+
+--b1_863f0c113fb091d73b161e4f1d8a371e--

@@ -1,0 +1,31 @@
+{
+	"name": "@workspace/sync",
+	"type": "module",
+	"engines": {
+		"node": "22"
+	},
+	"scripts": {
+		"check:types": "tsc --noEmit",
+		"start": "tsx src/entry.ts",
+		"dev": "cross-env NODE_ENV=development tsx watch src/entry.ts",
+		"build": "echo \"No build specified, but build script is required for Railway.\"",
+		"test": "vitest --run",
+		"test:watch": "vitest --watch",
+		"vitest": "vitest"
+	},
+	"dependencies": {
+		"@workspace/core": "workspace:*",
+		"@workspace/sync-data": "workspace:*",
+		"es-toolkit": "^1.31.0",
+		"jose": "^6.0.12",
+		"pg-promise": "^11.10.2",
+		"ws": "^8.18.1"
+	},
+	"devDependencies": {
+		"@types/node": "~22.10.5",
+		"@types/ws": "^8.5.14",
+		"@workspace/google": "workspace:*",
+		"@workspace/test-utils": "workspace:*",
+		"vitest": "^3.0.9"
+	}
+}

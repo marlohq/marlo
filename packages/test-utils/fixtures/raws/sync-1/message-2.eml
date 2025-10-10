@@ -1,0 +1,97 @@
+Delivered-To: erika@marlo.so
+Received: by 2002:a05:7000:32cf:b0:5fd:afd4:3f07 with SMTP id y15csp310219mad;
+        Wed, 5 Feb 2025 07:34:28 -0800 (PST)
+X-Received: by 2002:a05:6512:1085:b0:543:e4aa:e0df with SMTP id 2adb3069b0e04-54405a6a6e1mr1279634e87.43.1738769668655;
+        Wed, 05 Feb 2025 07:34:28 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1738769668; cv=none;
+        d=google.com; s=arc-20240605;
+        b=D67vIj7UiSQZbxQUBBecGqhU+RI9Mzdm2tQ3IwMy9fUmgpS9NR+DSQSWVqeMcGVBv8
+         TIRu/w62Mg8h59wMhCiB3y4w7+LLPS0wQnLtvsxdMrPA8G62QkomwPihNv2eE7GXaVBu
+         pZLtU0WqBppYiSrRuEOpNNblRIJq590yRCUlXHocZKgLf2i9v5G7+ML8tUcmB1fymGfw
+         zamS4XwJM06g8qs2PNMIR4XcW1ueNl/hzXShE0pTl5CI1F1G8u0krK7GDeg3nZ3YwjJG
+         7GcvpMSe/Oh+0aaLxR9rJxpuKFLh+6GSoxVJ7RK/L0G26VvnWgKN5xOjKT2dYlyf2Q+i
+         V1mg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=bCeTqUSC96qHjBQoe2PnEBMuUlNgoe8ARvKJn4TSUuo=;
+        fh=CdG9tZPur50ewD2jhjuADXdSnZl1so6j/l4QiJbnMvY=;
+        b=M9JlfxlVo5pibQ1pYPO/Lh4SUv2stupRFa9ymNNt/F8yzr3VSqxA7iDAIFlTPIQrdd
+         CPp1EzAwAzFaC0LyHX4TY2jvkSIUpgBoQWt5rbyc8z5cQePL5glxqZwigOyJISYQMxd9
+         KXWDKYnnAOWrJHG1GyVQKkfUld53wMohTHy8Hy4AY3YJ62A8MDkhfVNyCk3r3p+bhPaF
+         0yBG5Z3Xme/BpJ10I0nYKFyb2Xa72mfVAduvi5lgfzNbnf3cHUcenrVzY4tp39ki5AhS
+         YzDLT/QuD0v1uQzz5ci0Vk4nu2QSh0wloF0E/40eo//GWCqpuMIWXvGO9w7BWd3nGrCU
+         PhaA==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@astro-build.20230601.gappssmtp.com header.s=20230601 header.b=nr5wtZWP;
+       spf=none (google.com: erika@astro.build does not designate permitted sender hosts) smtp.mailfrom=erika@astro.build;
+       dara=pass header.i=@marlo.so
+Return-Path: <erika@astro.build>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id 2adb3069b0e04-5440d359546sor30232e87.13.2025.02.05.07.34.28
+        for <erika@marlo.so>
+        (Google Transport Security);
+        Wed, 05 Feb 2025 07:34:28 -0800 (PST)
+Received-SPF: none (google.com: erika@astro.build does not designate permitted sender hosts) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@astro-build.20230601.gappssmtp.com header.s=20230601 header.b=nr5wtZWP;
+       spf=none (google.com: erika@astro.build does not designate permitted sender hosts) smtp.mailfrom=erika@astro.build;
+       dara=pass header.i=@marlo.so
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=astro-build.20230601.gappssmtp.com; s=20230601; t=1738769667; x=1739374467; darn=marlo.so;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bCeTqUSC96qHjBQoe2PnEBMuUlNgoe8ARvKJn4TSUuo=;
+        b=nr5wtZWPEDjkvTedvxLg3ofJ919zUP3MOVE+DDj1nYjMTbYuCaAyLnfnMc4lFXoNcs
+         t7YgpXlwbqzxo6OJW/T3QbkkPCQ/bkLeu2kjkQjAGpD7mzhhUsg9hpJqbs1ETMUz1j1/
+         +nLifA6U+QJkTEJB1xVDPyJh17xxDCANqJreUnXSdOz+15YVDXe3xyoLpaP7WMmVQ3Uy
+         9q2w0ZM53EiX77JYgmo6IPiWkhazBbPkr5nusIopLbLIyKYMdnkBJWxcI2NY0jCdo6xd
+         7J7F0RM21EhWo00i6zZQdS7Pl4JQg7OTdIaSFNrKOdGDUP80dk5L71tpihxQhThyr3JG
+         40WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738769667; x=1739374467;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bCeTqUSC96qHjBQoe2PnEBMuUlNgoe8ARvKJn4TSUuo=;
+        b=Fj/etIAssUJIX0/JyZ5GSjbZs62PJcRqiFb+TKRCEoRx6vav3qN22wOW8xF2SukiCi
+         UdJFl2cfwth2vGnook5FlxKptja5tbwJtJIHN44/NuHZSmFQbwx7cXRI2IVbgfXFjVcq
+         FGnlIHLhLTl3BV4KAYE5aYqoadxRaNfwBVJnJF4ySrJSqICP1Ys0ipmRUkY3r3dYKhA+
+         N1b1PfoROz8QQ4+WXheFtC+RbNfSR+ePhQr6nqllgJQEL8gQg30lQcN/AlcqSxEsK+yP
+         h26UStDFztcTeIjv/stc99LAsqUOnsX0lwXbkxZykvhR58e8xnhmUCrGBRBG4RFt18sD
+         Z8ag==
+X-Gm-Message-State: AOJu0YwM84N5IdZPaFXhsniR4yZVaTMt0pIyZAJgcEg12+85maD/S8Sj
+	nXmcUiDq/8SlZ+PKKMP3bu9j+0Nifcerwi1YwpSDzQJ3EwfiMtGOIk51pXcriRCAw19O5vkrW8A
+	+lQgkD/h6EQ+F7hseJBxzXbPcpFhDHCWvoj/0cHh2NXK0mu+TZeE=
+X-Gm-Gg: ASbGncu3P2oJKGXa9wgwE5HYxB9MQo5ktWb4tlmfBLtyZgNrHCwGZ/2tsG2upWOcRlU
+	HZXwxRVR6grqBTm5LTYGBbb7M7CTcToXmrw8yHShGJYHd0Yc6ZoW2mbsybqEuP2zkIU7cYET2Sd
+	U=
+X-Google-Smtp-Source: AGHT+IFGE9cTwgKxYfxJwwQKyfGZkfXK5qjX5nu2hq+BKX2gqV7i9oKe1JbFzM6Cea8Ey6u9p3C/dn6nCB/ojAahVTw=
+X-Received: by 2002:a05:6512:3e2a:b0:540:251b:fe09 with SMTP id
+ 2adb3069b0e04-54405a103demr1165851e87.19.1738769665680; Wed, 05 Feb 2025
+ 07:34:25 -0800 (PST)
+MIME-Version: 1.0
+From: Erika <erika@astro.build>
+Date: Wed, 5 Feb 2025 16:34:14 +0100
+X-Gm-Features: AWEUYZmmMEW8TIkIckU75N2jal3nC_TFSqMmadcskRFQnoom3cCo4q8GTwVFipo
+Message-ID: <CAGxMC=B3PymF+rLm6cB_g0S5PeQEprG94Z4uZYywnD1uez9cxA@mail.gmail.com>
+Subject: Welcome to the party!
+To: "erika@marlo.so" <erika@marlo.so>
+Content-Type: multipart/alternative; boundary="000000000000450096062d66dcf7"
+
+--000000000000450096062d66dcf7
+Content-Type: text/plain; charset="UTF-8"
+
+Hello!
+
+Just a small mail to welcome you to Marlo, the premier platform for emails.
+
+Thank you for joining us, and we hope you like it!
+
+Erika
+
+--000000000000450096062d66dcf7
+Content-Type: text/html; charset="UTF-8"
+
+<div dir="ltr">Hello!<br><br>Just a small mail to welcome you to Marlo, the premier platform for emails.<br><br>Thank you for joining us, and we hope you like it!<br><br>Erika</div>
+
+--000000000000450096062d66dcf7--

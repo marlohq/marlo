@@ -1,0 +1,81 @@
+@import './prose.css';
+@import './prose-editor.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+	.no-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+@layer base {
+	:root {
+		--radius: 0.5rem;
+	}
+
+	/* Ensure the html and body take the full viewport height */
+	html,
+	body {
+		height: 100%;
+		margin: 0;
+	}
+
+	/** Editor overrides */
+	.composer-editor.ProseMirror-focused {
+		outline: none;
+	}
+	.composer-editor p.is-editor-empty:first-child::before {
+		content: attr(data-placeholder);
+		float: left;
+		color: #a3a3a3;
+		font-size: 14px;
+		pointer-events: none;
+		height: 0;
+	}
+}
+
+/** TODO(fks): Clean up, make more consistent and organized, bring these styles into the base layer. */
+
+:where(.remixicon) {
+	height: 1rem;
+	width: 1rem;
+}
+
+.mention {
+	color: #2563eb;
+	font-weight: 500;
+}
+
+span[data-mark-type='streaming'] {
+	color: #757575;
+}
+
+div[cmdk-list-sizer] > div[cmdk-group] + div[cmdk-group] {
+	padding-top: 0;
+}
+
+.shadow-mail > div > *:last-child {
+	margin-bottom: 0;
+}
+
+.ai-citation:first-of-type {
+	display: inline-flex;
+}
+
+/** Streamdown overrides */
+h1[data-streamdown='heading-1'] {
+	font-size: 22px;
+}
+
+h2[data-streamdown='heading-2'] {
+	@apply text-xl;
+}
+h3[data-streamdown='heading-3'],
+h4[data-streamdown='heading-4'],
+h5[data-streamdown='heading-5'],
+h6[data-streamdown='heading-6'] {
+	@apply text-lg;
+}

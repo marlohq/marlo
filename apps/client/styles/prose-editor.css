@@ -1,0 +1,177 @@
+/* 
+ * Re-creating our own `prose` class here to get around limitations/complexity
+ * in customizing Tailwind's typography plugin. We customize this to be the correct
+ * styles for our composer editor, which is not the same as Tailwind's default "prose" class
+ * which is meant to be used for blog posts, long-form writing, etc.
+ */
+@layer components {
+	.prose-editor blockquote {
+		margin: 0px 0px 0px 0.8ex;
+		border-left: 1px solid rgb(204, 204, 204);
+		padding-left: 1ex;
+	}
+	.prose-editor p {
+		margin-top: 0em;
+		margin-bottom: 0em;
+	}
+
+	/* Headings: modest sizes like Gmail, tight spacing */
+	.prose-editor h1,
+	.prose-editor h2,
+	.prose-editor h3,
+	.prose-editor h4,
+	.prose-editor h5,
+	.prose-editor h6 {
+		font-weight: 700;
+		line-height: 1.3;
+		margin: 0.75em 0 0.375em;
+	}
+	.prose-editor h1 {
+		font-size: 22px;
+	}
+	.prose-editor h2 {
+		font-size: 18px;
+	}
+	.prose-editor h3 {
+		font-size: 16px;
+		font-weight: 600;
+	}
+	.prose-editor h4 {
+		font-size: 15px;
+		font-weight: 600;
+	}
+	.prose-editor h5 {
+		font-size: 14px;
+		font-weight: 600;
+	}
+	.prose-editor h6 {
+		font-size: 13px;
+		font-weight: 600;
+	}
+
+	/* Emphasis */
+	.prose-editor b,
+	.prose-editor strong {
+		font-weight: 600;
+	}
+	.prose-editor i,
+	.prose-editor em {
+		font-style: italic;
+	}
+	.prose-editor u {
+		text-decoration: underline;
+	}
+
+	/* Links */
+	.prose-editor a {
+		color: #2563eb;
+		text-decoration: underline;
+	}
+
+	/* Lists: restore indentation and markers reset by Preflight */
+	.prose-editor ul,
+	.prose-editor ol {
+		padding-left: 1.5em;
+		margin: 0.5em 0;
+	}
+	.prose-editor ul {
+		list-style-type: disc;
+	}
+	.prose-editor ol {
+		list-style-type: decimal;
+	}
+	.prose-editor li {
+		margin: 0.25em 0;
+	}
+	.prose-editor ul ul {
+		list-style-type: circle;
+	}
+	.prose-editor ul ul ul {
+		list-style-type: square;
+	}
+	.prose-editor ol ol {
+		list-style-type: lower-alpha;
+	}
+	.prose-editor ol ol ol {
+		list-style-type: lower-roman;
+	}
+	.prose-editor ul ul,
+	.prose-editor ul ol,
+	.prose-editor ol ul,
+	.prose-editor ol ol {
+		margin: 0.25em 0;
+	}
+
+	/* Code */
+	.prose-editor code {
+		font-family:
+			ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+			monospace;
+		font-size: 0.95em;
+		background-color: #f3f4f6;
+		padding: 0.1em 0.3em;
+		border-radius: 3px;
+	}
+	.prose-editor pre {
+		font-family:
+			ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+			monospace;
+		font-size: 0.95em;
+		line-height: 1.5;
+		white-space: pre-wrap;
+		word-break: break-word;
+		background-color: #f8fafc;
+		border: 1px solid #e5e7eb;
+		border-radius: 4px;
+		padding: 0.75em 1em;
+		margin: 0.75em 0;
+	}
+	.prose-editor pre code {
+		background: transparent;
+		padding: 0;
+	}
+
+	/* Horizontal rule */
+	.prose-editor hr {
+		border: 0;
+		border-top: 1px solid #e5e7eb;
+		margin: 0.75em 0;
+	}
+
+	/* Tables */
+	.prose-editor table {
+		width: 100%;
+		max-width: 100%;
+		border-collapse: collapse;
+		border: 1px solid #e5e7eb;
+		margin: 0.75em 0;
+		font-size: 0.95em;
+	}
+	.prose-editor th,
+	.prose-editor td {
+		border: 1px solid #e5e7eb;
+		padding: 6px 8px;
+		text-align: left;
+		vertical-align: top;
+	}
+	.prose-editor thead th {
+		font-weight: 600;
+	}
+
+	/* Media */
+	.prose-editor img,
+	.prose-editor video {
+		max-width: 100%;
+		height: auto;
+	}
+
+	/* Misc */
+	.prose-editor sup {
+		vertical-align: super;
+		font-size: 0.8em;
+	}
+	.prose-editor sub {
+		vertical-align: sub;
+		font-size: 0.8em;
+	}
+}

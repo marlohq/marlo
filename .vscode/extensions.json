@@ -1,0 +1,10 @@
+{
+	"recommendations": [
+		"astro-build.astro-vscode",
+		"ms-playwright.playwright",
+		"biomejs.biome",
+		"mikestead.dotenv",
+		"bradlc.vscode-tailwindcss"
+	],
+	"unwantedRecommendations": []
+}

@@ -1,0 +1,52 @@
+---
+import '@fontsource-variable/inter';
+import '@workspace/client/styles';
+import { Button } from '@workspace/ui';
+import Footer from '../components/Footer.astro';
+import favicon from '../images/favicon.webp';
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Marlo - Your inbox, reimagined.</title>
+		<link rel="shortcut icon" href={favicon.src} />
+		<link rel="icon" href={favicon.src} type="image/webp" sizes="32x32" />
+		<meta name="robots" content="noindex" />
+	</head>
+	<body class="bg-[#FAFAFA]">
+		<div class="flex h-full w-full flex-col items-center justify-center p-8 text-neutral-900/65">
+			<div class="flex w-full max-w-screen-sm items-center justify-start gap-1">
+				<a href="/" class="font-medium text-neutral-900">marlo</a>
+				<span>&mdash; intelligent email for busy people.</span>
+			</div>
+			<div class="flex w-full max-w-screen-sm items-center justify-start gap-1">
+				<span>by invitation only.</span>
+			</div>
+			<div
+				id="button-group"
+				class="flex h-20 w-full max-w-screen-sm items-center justify-start gap-2 pb-2"
+			>
+				<a href="/login">
+					<Button id="login-button" className="bg-blue-600 text-white hover:bg-blue-700">
+						login / sign up
+					</Button>
+				</a>
+			</div>
+		</div>
+
+		<Footer />
+
+		<!-- Inline the script to avoid flash of incomplete content. -->
+		<script is:inline>
+			const loginError = document.getElementById('login-error');
+			const isError = location.search.includes('error');
+			if (isError && loginError) {
+				loginError.classList.remove('hidden');
+			}
+		</script>
+	</body>
+</html>

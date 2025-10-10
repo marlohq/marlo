@@ -1,0 +1,127 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
+	"assist": { "actions": { "source": { "organizeImports": "on" } } },
+	"linter": {
+		"enabled": true,
+		"includes": ["**", "!**/apps/sync/tests/mocks.ts"],
+		// NOTE: We handle warnings as errors when running the `biome` CLI (including in CI)
+		// Use "warn" instead of "error" for rules that are reasonable to break during development.
+		//
+		// For example, we want you to use `console.log()` during development so that you remember
+		// to clean up those logs before your work is merged to the `main` branch.
+		"rules": {
+			"recommended": true,
+			"complexity": {
+				// noForEach -- There are valid use cases for `forEach`, we believe this is too strict.
+				"noForEach": "off",
+				// noImportantStyles -- We use these very rarely, and sometimes they are needed.
+				"noImportantStyles": "off"
+			},
+			"correctness": {
+				// useParseIntRadix -- Not a useful rule.
+				"useParseIntRadix": "off",
+				// noUnusedFunctionParameters -- Not a useful rule.
+				"noUnusedFunctionParameters": "off",
+				// useUniqueElementIds -- We use static IDs as props, so this is fine.
+				"useUniqueElementIds": "off",
+				// noUnknownFunction -- Turned off to allow the Tailwind theme() function in css files.
+				"noUnknownFunction": "off",
+				// noUnusedImports -- Fine during development.
+				// FIX: Run `pnpm format` to fix before merging to `main`.
+				"noUnusedImports": "warn",
+				// useImportExtensions -- Fine during development.
+				// FIX: Run `pnpm format:lint --unsafe` to fix before merging to `main`.
+				"useImportExtensions": "warn",
+				// noUnusedVariables -- Fine during development.
+				// FIX: Run `pnpm format:lint --unsafe` to fix before merging to `main`.
+				// NOTE: Looks like we had a regression in Biome v1, where this was turned off.
+				// I've disabled it for now, but we should work to get it back onto "warn".
+				"noUnusedVariables": "off"
+			},
+			"suspicious": {
+				"noImplicitAnyLet": "off",
+				// noArrayIndexKey -- This isn't a mistake that we make often, and there are
+				// several valid use cases for it, so we're okay with turning this off.
+				"noArrayIndexKey": "off",
+				// noUnknownAtRules -- We use Tailwind at-rules, not really a problem.
+				"noUnknownAtRules": "off",
+				// useIterableCallbackReturn -- This is too strict, not a real problem
+				// and leads to worse code due to arrow function syntax.
+				"useIterableCallbackReturn": "off",
+				// noExplicitAny -- Fine during development.
+				// FIX: Remove use of `any` before merging to `main`.
+				"noExplicitAny": "warn",
+				// noConsole -- Fine during development.
+				// FIX: import {logger} from '@workspace/core/logger' instead.
+				"noConsole": "warn",
+				// noDebugger -- Fine during development.
+				// FIX: Remove use of `debugger` before merging to `main`.
+				"noDebugger": "warn"
+			},
+			"style": {
+				"noRestrictedGlobals": {
+					"level": "error",
+					"options": {
+						"deniedGlobals": { "location": "TODO: Add a custom message here." }
+					}
+				},
+				"noDescendingSpecificity": "off",
+				"noInferrableTypes": "off",
+				"noUnusedTemplateLiteral": "off",
+				"useSelfClosingElements": "off",
+				// useNodejsImportProtocol -- Fine during development.
+				// FIX: Run `pnpm format:lint --unsafe` to fix before merging to `main`.
+				"useNodejsImportProtocol": "warn",
+				// noNonNullAssertion -- Fine during development.
+				// FIX: import {invariant} from 'es-toolkit' instead.
+				"noNonNullAssertion": "warn",
+				"noUselessElse": "off"
+			}
+		}
+	},
+	"vcs": {
+		"clientKind": "git",
+		"enabled": true,
+		"useIgnoreFile": true
+	},
+	// NOTE(fks, 2024-10-03): We currently use Prettier for formatting
+	"formatter": {
+		"enabled": false
+	},
+	"overrides": [
+		{
+			// Client-specific overrides
+			"includes": ["**/apps/client/src/**/*", "**/packages/test-utils/**/*"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						// noConsole -- Needed in the client for logging.
+						"noConsole": "off"
+					}
+				}
+			}
+		},
+		{
+			// Astro-specific overrides
+			"includes": ["**/*.astro"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						// biome doesn't recognize import usages in astro templates
+						"noUnusedImports": "off"
+					}
+				}
+			}
+		},
+		{
+			// JSON config-specific overrides
+			"includes": ["**/tsconfig.json", "**/tsconfig.*.json"],
+			"json": {
+				"parser": {
+					"allowComments": true,
+					"allowTrailingCommas": true
+				}
+			}
+		}
+	]
+}

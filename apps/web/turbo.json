@@ -1,0 +1,9 @@
+{
+	"extends": ["//"],
+	"globalDependencies": [".astro/**/*.ts"],
+	"tasks": {
+		"build": {
+			"outputs": ["dist/**"]
+		}
+	}
+}

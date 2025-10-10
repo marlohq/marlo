@@ -1,0 +1,21 @@
+{
+	"name": "@workspace/backend",
+	"type": "module",
+	"exports": {
+		"./*": "./src/*"
+	},
+	"scripts": {
+		"dev:types": "tsc --noEmit --watch",
+		"check:types": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@workspace/ai": "workspace:*",
+		"@workspace/core": "workspace:*",
+		"@workspace/google": "workspace:*",
+		"@workspace/mcp": "workspace:*",
+		"ai": "^5.0.0",
+		"es-toolkit": "^1.31.0",
+		"zod": "^3.24.2"
+	},
+	"devDependencies": {}
+}

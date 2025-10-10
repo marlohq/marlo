@@ -1,0 +1,33 @@
+{
+	"name": "@workspace/google",
+	"type": "module",
+	"exports": {
+		"./*": "./src/*"
+	},
+	"scripts": {
+		"dev:types": "tsc --noEmit --watch",
+		"check:types": "tsc --noEmit",
+		"test": "vitest --run",
+		"test:watch": "vitest --watch",
+		"vitest": "vitest"
+	},
+	"dependencies": {
+		"@workspace/ai": "workspace:*",
+		"@workspace/core": "workspace:*",
+		"entities": "^6.0.0",
+		"es-toolkit": "^1.31.0",
+		"google-auth-library": "^10.2.1",
+		"googleapis": "^156.0.0",
+		"html-to-text": "^9.0.5",
+		"mail-mime-builder": "^1.0.1",
+		"sanitize-html": "^2.14.0",
+		"zod": "^3.24.2"
+	},
+	"devDependencies": {
+		"@types/html-to-text": "^9.0.4",
+		"@types/sanitize-html": "^2.13.0",
+		"@workspace/test-utils": "workspace:*",
+		"arctic": "^3.7.0",
+		"vitest": "^3.0.9"
+	}
+}

@@ -1,0 +1,89 @@
+{
+	"name": "@workspace/desktop",
+	"description": "Intelligent email for busy people.",
+	"type": "module",
+	"version": "0.0.1",
+	"engines": {
+		"node": "22"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/astrotechco/magicthing"
+	},
+	"main": "dist-electron/main.js",
+	"scripts": {
+		"dev:desktop": "astro dev",
+		"build:astro": "astro build",
+		"preview:electron": "electron-builder",
+		"build:electron": "CSC_IDENTITY_AUTO_DISCOVERY=false ELECTRON_BUILDER_SKIP_NOTARIZE=true electron-builder  --mac --arm64",
+		"preview:desktop": "rimraf -g './dist-*' && pnpm run build:astro && pnpm run preview:electron",
+		"build:desktop": "rimraf -g './dist-*' && pnpm run build:astro && pnpm run build:electron",
+		"check:types": "cross-env NODE_OPTIONS=--max-old-space-size=4096 astro check --preserveWatchOutput --minimumSeverity warning",
+		"clear-protocol": "defaults delete com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers 2>/dev/null || true && /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user",
+		"check-protocol": "defaults read com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers | grep -A 5 -B 5 marlo || echo 'No marlo protocol registrations found'"
+	},
+	"dependencies": {
+		"@fontsource-variable/inter": "^5.1.1",
+		"@workspace/client": "workspace:*",
+		"@workspace/core": "workspace:*",
+		"@workspace/ui": "workspace:*",
+		"astro-electron": "^0.5.0",
+		"electron-updater": "^6.6.2",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0"
+	},
+	"devDependencies": {
+		"@astrojs/check": "^0.9.4",
+		"@astrojs/react": "^4.3.0",
+		"@astrojs/tailwind": "^6.0.0",
+		"@types/react": "^19.0.8",
+		"@types/react-dom": "^19.0.3",
+		"astro": "^5.5.3",
+		"babel-plugin-react-compiler": "19.1.0-rc.2",
+		"electron": "^34.3.0",
+		"electron-builder": "^25.1.8",
+		"rimraf": "^6.0.1"
+	},
+	"build": {
+		"appId": "com.marlo.desktop",
+		"productName": "Marlo",
+		"directories": {
+			"output": "dist-electron",
+			"buildResources": "assets"
+		},
+		"mac": {
+			"target": [
+				"dmg",
+				"zip"
+			],
+			"category": "public.app-category.productivity",
+			"identity": null,
+			"hardenedRuntime": false,
+			"gatekeeperAssess": false
+		},
+		"publish": [
+			{
+				"provider": "github",
+				"owner": "astrotechco",
+				"repo": "magicthing",
+				"releaseType": "release",
+				"vPrefixedTagName": false
+			}
+		],
+		"buildDependenciesFromSource": false,
+		"npmRebuild": false,
+		"extraMetadata": {
+			"dependencies": {}
+		},
+		"files": [
+			"dist-electron/**/*",
+			"!node_modules"
+		],
+		"extraResources": [
+			{
+				"from": "dist-astro",
+				"to": "client"
+			}
+		]
+	}
+}

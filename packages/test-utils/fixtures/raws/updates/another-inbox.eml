@@ -1,0 +1,7 @@
+From: sender@example.com
+To: recipient@example.com
+Subject: Another Inbox Test
+Message-ID: <another-inbox-message@example.com>
+Date: Wed, 31 Jul 2024 10:10:00 +0000
+
+This is another test message that should have the INBOX label.

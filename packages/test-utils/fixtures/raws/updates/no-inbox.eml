@@ -1,0 +1,7 @@
+From: sender@example.com
+To: recipient@example.com
+Subject: No Inbox Test
+Message-ID: <no-inbox-message@example.com>
+Date: Wed, 31 Jul 2024 10:05:00 +0000
+
+This is a test message that should NOT have the INBOX label.

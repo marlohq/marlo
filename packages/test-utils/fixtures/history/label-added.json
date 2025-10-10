@@ -1,0 +1,19 @@
+{
+	"$schema": "./$schema.json",
+	"history": [
+		{
+			"messagesAdded": [],
+			"messagesDeleted": [],
+			"labelsAdded": [
+				{
+					"labelIds": ["some-label"],
+					"message": {
+						"id": "will-get-labels",
+						"threadId": "will-get-labels"
+					}
+				}
+			],
+			"labelsRemoved": []
+		}
+	]
+}

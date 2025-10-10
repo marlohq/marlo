@@ -1,0 +1,67 @@
+{
+	"name": "magicthing",
+	"type": "module",
+	"license": "FSL-1.1-MIT",
+	"engines": {
+		"node": "22"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/astrotechco/magicthing"
+	},
+	"packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
+	"scripts": {
+		"dev": "turbo dev",
+		"dev:desktop": "turbo run dev dev:desktop",
+		"dev:types": "tsc --noEmit --watch",
+		"dev:webhooks": "turbo run dev:webhooks:github dev:webhooks:google",
+		"dev:webhooks:google": "smee -u https://smee.io/Gz2mjcOLaoWje5A -t http://localhost:3000/webhooks/google",
+		"dev:webhooks:github": "smee -u https://smee.io/dVmtuzcHdoanUR8K -t http://localhost:5001/webhooks/github",
+		"dev:webhooks:cal": "smee -u https://smee.io/j3FEtnwmZXvMzkKO -t http://localhost:5001/webhooks/cal",
+		"dev:webhooks:https": "turbo run dev:webhooks:https:github dev:webhooks:https:google",
+		"dev:webhooks:https:google": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 smee -u https://smee.io/Gz2mjcOLaoWje5A -t https://localhost:5001/webhooks/google",
+		"dev:webhooks:https:github": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 smee -u https://smee.io/dVmtuzcHdoanUR8K -t https://localhost:5001/webhooks/github",
+		"build": "turbo build",
+		"build:desktop": "turbo run build:desktop",
+		"check": "turbo run build check:lint check:types",
+		"check:lint": "biome lint . --error-on-warnings",
+		"check:lint:ci": "biome lint . --error-on-warnings --skip=lint/correctness/noUnusedImports --reporter=github",
+		"check:types": "turbo run check:types check:types:tsc",
+		"check:types:tsc": "tsc --noEmit",
+		"format": "turbo run format:lint format:style",
+		"format:lint": "biome check . --write",
+		"format:style": "prettier . --cache --write --list-different",
+		"db:push": "drizzle-kit push",
+		"reset": "tsx scripts/reset-db.ts",
+		"reset:redis": "redis-cli -h 127.0.0.1 -p 6379 -n 0 FLUSHDB",
+		"reset:all": "pnpm run reset && pnpm run reset:redis",
+		"db:sync": "drizzle-kit migrate",
+		"db:studio": "drizzle-kit studio",
+		"test": "turbo test --concurrency=1 --filter=!'@workspace/google' --filter=!'@workspace/mail-ingester' && pnpm run test:db",
+		"test:db": "turbo run test --filter='@workspace/google' --filter='@workspace/mail-ingester' --concurrency=1",
+		"test:setup-db": "bash scripts/setup-test-database.sh"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.2.0",
+		"@total-typescript/ts-reset": "^0.6.1",
+		"@types/node": "~22.10.10",
+		"cross-env": "^10.0.0",
+		"drizzle-kit": "^0.31.4",
+		"prettier": "^3.4.2",
+		"prettier-plugin-astro": "^0.14.1",
+		"prettier-plugin-jsdoc": "^1.3.2",
+		"prettier-plugin-tailwindcss": "^0.6.9",
+		"tsx": "^4.19.2",
+		"turbo": "^2.3.3",
+		"typescript": "^5.9.2"
+	},
+	"pnpm": {
+		"packageExtensions": {
+			"react-remove-scroll": {
+				"dependencies": {
+					"tslib": "^2.7.0"
+				}
+			}
+		}
+	}
+}

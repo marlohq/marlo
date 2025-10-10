@@ -1,0 +1,61 @@
+name: Nightly macOS build & release
+
+on:
+  schedule:
+    # 09:00 UTC ≈ 02:00 America/Los_Angeles
+    - cron: '0 9 * * *'
+  # manual trigger if you want to kick a build
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v3
+
+      - name: Install dependencies
+        run: doppler run -- pnpm install
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_SERVICE_TOKEN }}
+
+      # Build a nightly version string like: 0.0.1-2025.08.25-abc1234
+      - name: Compute nightly version
+        id: meta
+        run: |
+          DATE=$(date -u +%Y%m%d)
+          SHORT_SHA=${GITHUB_SHA::7}
+          echo "ver=0.0.1-${DATE}-${SHORT_SHA}" >> $GITHUB_OUTPUT
+
+      # IMPORTANT: Bump package.json version without creating a commit or git tag
+      # npm is available with Node; use --no-git-tag-version to avoid repo changes
+      - name: Set package.json version (no tag/commit)
+        working-directory: apps/desktop
+        run: npm version "${{ steps.meta.outputs.ver }}" --no-git-tag-version
+
+      # NOTE(fks, 2025-08-26): We intentionally don't use Doppler for this step because we
+      # shouldn't need to. Currently, all secrets needed to build the desktop client should be
+      # checked into the repo and available in `apps/desktop/.env.production`. If real secrets
+      # are ever needed to build in the future, we should revisit this.
+      - name: Build Desktop app
+        working-directory: apps/desktop
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pnpm run build:desktop --publish always
