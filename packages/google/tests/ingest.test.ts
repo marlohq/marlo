@@ -4,6 +4,8 @@ import { createTestAccount } from '@workspace/test-utils/utils.js';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { consumeMessage } from '../src/mail-ingestion/ingest.ts';
 
+console.log("Here's my taskforce token:", process.env.NPM_TASKFORCESH_TOKEN)
+
 describe('Ingest', () => {
 	let account: Account;
 
