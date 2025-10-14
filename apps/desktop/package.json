@@ -15,9 +15,11 @@
 		"dev:desktop": "astro dev",
 		"build:astro": "astro build",
 		"preview:electron": "electron-builder",
-		"build:electron": "CSC_IDENTITY_AUTO_DISCOVERY=false ELECTRON_BUILDER_SKIP_NOTARIZE=true electron-builder  --mac --arm64",
-		"preview:desktop": "rimraf -g './dist-*' && pnpm run build:astro && pnpm run preview:electron",
+		"build:electron": "CSC_IDENTITY_AUTO_DISCOVERY=false ELECTRON_BUILDER_SKIP_NOTARIZE=true electron-builder --mac --arm64",
+		"build:electron:signed": "electron-builder --mac --arm64",
 		"build:desktop": "rimraf -g './dist-*' && pnpm run build:astro && pnpm run build:electron",
+		"build:desktop:signed": "rimraf -g './dist-*' && pnpm run build:astro && pnpm run build:electron:signed",
+		"preview:desktop": "rimraf -g './dist-*' && pnpm run build:astro && pnpm run preview:electron",
 		"check:types": "cross-env NODE_OPTIONS=--max-old-space-size=4096 astro check --preserveWatchOutput --minimumSeverity warning",
 		"clear-protocol": "defaults delete com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers 2>/dev/null || true && /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user",
 		"check-protocol": "defaults read com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers | grep -A 5 -B 5 marlo || echo 'No marlo protocol registrations found'"
@@ -57,9 +59,10 @@
 				"zip"
 			],
 			"category": "public.app-category.productivity",
-			"identity": null,
-			"hardenedRuntime": false,
-			"gatekeeperAssess": false
+			"hardenedRuntime": true,
+			"gatekeeperAssess": false,
+			"entitlements": "assets/entitlements.mac.plist",
+			"entitlementsInherit": "assets/entitlements.mac.plist"
 		},
 		"publish": [
 			{
