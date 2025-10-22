@@ -107,25 +107,33 @@ function TriagePageController({ cards }: { cards: CardData[] }) {
 	const [loadingHighlights, setLoadingHighlights] = useState<Set<string>>(new Set());
 
 	const currentCard = cards[currentCardIndex];
+	const queryDeps = JSON.stringify(currentCard?.threads.map((t) => t.id) ?? []);
 	const [threadsData] = useQuery(
 		(db) => threadsQuery(db, currentCard?.threads.map((t) => t.id) ?? []).toArray(),
-		[JSON.stringify(currentCard?.threads.map((t) => t.id) ?? [])],
+		[queryDeps],
 	);
-	const threads = threadsData
-		?.sort((a, b) => new Date(b.data.lastSentAt).getTime() - new Date(a.data.lastSentAt).getTime())
-		.filter((t) => t.view === 'triage')
-		.map((t) => new ClientThread(t.data))
-		.filter((t) => !t.onlyHasDrafts());
+	const threadIds = threadsData?.map((t) => t.data.id) ?? [];
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: threadIds updates on ever render
+	const threads = useMemo(() => {
+		return threadsData
+			?.sort((a, b) => new Date(b.data.lastSentAt).getTime() - new Date(a.data.lastSentAt).getTime())
+			.filter((t) => t.view === 'triage')
+			.map((t) => new ClientThread(t.data))
+			.filter((t) => !t.onlyHasDrafts());
+	}, [threadIds.join(',')]);
 
 	// Ensure Esc on thread detail returns to TriageInbox when coming from Flow
 	const { setNavigationHistory } = useCommandPaletteActions();
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: threadsIds updates on ever render
 	useEffect(() => {
-		if (!threads) return;
+		if (!threadIds) return;
 		setNavigationHistory({
 			to: '/triage',
-			ids: threads.map((t) => t.id),
+			ids: threadIds,
 		});
-	}, [threads, setNavigationHistory]);
+	}, [threadIds.join(','), setNavigationHistory]);
 
 	// Preload highlights for current and next 5 cards
 	useEffect(() => {

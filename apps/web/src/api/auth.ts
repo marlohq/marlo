@@ -10,6 +10,7 @@ import {
 	createUserData,
 	deleteAllCookiesOnLogout,
 	getActiveAccountOrThrow,
+	getCurrentAccount,
 } from '../lib/auth.ts';
 
 const defineORPCAction = os.$context<Pick<APIContext, 'locals' | 'cookies'>>();
@@ -19,9 +20,9 @@ const logger = baseLogger.child({
 
 export const actions = {
 	destroySession: defineORPCAction.input(z.object({})).handler(async ({ input, context }) => {
-		const currentAccount = await getActiveAccountOrThrow(context);
+		const currentAccount = await getCurrentAccount(context);
 		logger.info(
-			{ accountId: currentAccount.id, userId: currentAccount.userId, loggingOut: true },
+			{ accountId: currentAccount?.id ?? 'no current account', userId: currentAccount?.userId ?? 'no current user', loggingOut: true },
 			'Destroying session cookies for account',
 		);
 		deleteAllCookiesOnLogout(context);
