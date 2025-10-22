@@ -117,7 +117,9 @@ function TriagePageController({ cards }: { cards: CardData[] }) {
 	// biome-ignore lint/correctness/useExhaustiveDependencies: threadIds updates on ever render
 	const threads = useMemo(() => {
 		return threadsData
-			?.sort((a, b) => new Date(b.data.lastSentAt).getTime() - new Date(a.data.lastSentAt).getTime())
+			?.sort(
+				(a, b) => new Date(b.data.lastSentAt).getTime() - new Date(a.data.lastSentAt).getTime(),
+			)
 			.filter((t) => t.view === 'triage')
 			.map((t) => new ClientThread(t.data))
 			.filter((t) => !t.onlyHasDrafts());

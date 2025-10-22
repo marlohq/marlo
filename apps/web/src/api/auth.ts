@@ -22,7 +22,11 @@ export const actions = {
 	destroySession: defineORPCAction.input(z.object({})).handler(async ({ input, context }) => {
 		const currentAccount = await getCurrentAccount(context);
 		logger.info(
-			{ accountId: currentAccount?.id ?? 'no current account', userId: currentAccount?.userId ?? 'no current user', loggingOut: true },
+			{
+				accountId: currentAccount?.id ?? 'no current account',
+				userId: currentAccount?.userId ?? 'no current user',
+				loggingOut: true,
+			},
 			'Destroying session cookies for account',
 		);
 		deleteAllCookiesOnLogout(context);
