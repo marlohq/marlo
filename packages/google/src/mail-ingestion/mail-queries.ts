@@ -227,8 +227,8 @@ function buildThreadUpsertCte(
 							END
 						`
 			},
-      "remindAt" = ${shouldBeResolved ? sql`NULL` : sql`"Thread"."remindAt"`},
-      "reminderTriggeredAt" = ${shouldBeResolved ? sql`NULL` : sql`"Thread"."reminderTriggeredAt"`},
+      "remindAt" = NULL,
+      "reminderTriggeredAt" = NULL,
       "lastSentAt" = GREATEST("Thread"."lastSentAt", ${utcLastSentDate}::timestamptz),
       "updatedAt" = (SELECT timestamp FROM vars),
 	  "triagedAt" = ${shouldBeResolved ? sql`(SELECT timestamp FROM vars)` : sql`"Thread"."triagedAt"`},
