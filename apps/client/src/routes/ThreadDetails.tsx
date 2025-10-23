@@ -411,6 +411,7 @@ function ThreadActionButtons({ thread }: { thread: ClientThread }) {
 
 	const isReminder = thread.data.remindAt && !thread.data.reminderTriggeredAt;
 	const isResolved = thread.resolvedAt && !isReminder;
+
 	return (
 		<div className="-mr-1.5 flex shrink-0 items-center gap-1 justify-self-end">
 			<Button

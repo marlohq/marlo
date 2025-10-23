@@ -1,11 +1,23 @@
 import { RiInbox2Fill } from '@remixicon/react';
 import { mutate } from '@workspace/local/mutate.js';
+import type { SyncAction } from '@workspace/core/remote-sync.js';
 import { toast } from 'sonner';
 import { perf } from '../../lib/perf.ts';
+import { actions } from '../../lib/actions.ts';
 import type { ClientThread } from '../../threads/model.ts';
 import { defineCommand, useThreadsFromContext } from '../util.ts';
 
-async function moveToPriorityAction(threads: ClientThread[]) {
+function determineSyncAction(threads: ClientThread[]): SyncAction | undefined {
+	if (threads.some((t) => t.trashedAt)) {
+		return { id: 'trash:remove' as const };
+	}
+	if (threads.some((t) => t.spammedAt)) {
+		return { id: 'spam:remove' as const };
+	}
+	return undefined;
+}
+
+async function moveToPriorityAction(threads: ClientThread[], syncAction?: SyncAction) {
 	const actionId = crypto.randomUUID();
 	perf.time(`[PERF] moveToPriority-${actionId}`);
 	perf.log(`🎬 [PERF] moveToPriority START - ${threads.length} threads`, {
@@ -33,6 +45,15 @@ async function moveToPriorityAction(threads: ClientThread[]) {
 			})),
 		);
 		perf.timeEnd(`[PERF] moveToPriority-mutation-${actionId}`);
+
+		if (syncAction) {
+			perf.time(`[PERF] moveToPriority-sync-${actionId}`);
+			await actions.google.sync({
+				action: syncAction,
+				remoteThreadIds: threads.map((t) => t.remoteId),
+			});
+			perf.timeEnd(`[PERF] moveToPriority-sync-${actionId}`);
+		}
 
 		perf.timeEnd(`[PERF] moveToPriority-${actionId}`);
 		perf.log(`✅ [PERF] moveToPriority COMPLETE`, { actionId });
@@ -62,7 +83,8 @@ export const moveToPriorityCommand = defineCommand({
 						toast.warning('No threads selected.');
 						return;
 					}
-					moveToPriorityAction(threads);
+					const syncAction = determineSyncAction(threads);
+					moveToPriorityAction(threads, syncAction);
 				},
 			};
 		};

@@ -16,6 +16,8 @@ export const syncActionsSchema = z.union([
 	z.object({ id: z.literal('resolve:remove') }),
 ]);
 
+export type SyncAction = z.infer<typeof syncActionsSchema>;
+
 export async function syncWithRemote({
 	action,
 	accountId,
