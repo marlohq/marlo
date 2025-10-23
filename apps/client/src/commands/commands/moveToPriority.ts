@@ -1,9 +1,9 @@
 import { RiInbox2Fill } from '@remixicon/react';
-import { mutate } from '@workspace/local/mutate.js';
 import type { SyncAction } from '@workspace/core/remote-sync.js';
+import { mutate } from '@workspace/local/mutate.js';
 import { toast } from 'sonner';
-import { perf } from '../../lib/perf.ts';
 import { actions } from '../../lib/actions.ts';
+import { perf } from '../../lib/perf.ts';
 import type { ClientThread } from '../../threads/model.ts';
 import { defineCommand, useThreadsFromContext } from '../util.ts';
 
