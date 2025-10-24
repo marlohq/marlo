@@ -329,7 +329,7 @@ function useMessageCardComposerEditor({
 			to: data.to,
 			cc: data.cc,
 			bcc: data.bcc,
-			body: data.body,
+			body: finalizeTipTapHtml(data.body || ''),
 			subject: data.subject,
 			attachments: data.attachments,
 		});

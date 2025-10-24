@@ -238,7 +238,7 @@ function ComposeForm({
 						form={form}
 						editor={editor}
 						draftMessageId={message.id}
-						onSubmit={(data) => sendMutation.mutate(data)}
+						onSubmit={(data) => sendMutation.mutate({ ...data, body: finalizeTipTapHtml(data.body || '') })}
 						lastSaved={lastSaved ? new Date(lastSaved) : undefined}
 						pending={sendMutation.isPending}
 						saving={saving}
