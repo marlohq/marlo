@@ -112,7 +112,7 @@ function TriagePageController({ cards }: { cards: CardData[] }) {
 		(db) => threadsQuery(db, currentCard?.threads.map((t) => t.id) ?? []).toArray(),
 		[queryDeps],
 	);
-	const threadIds = threadsData?.map((t) => t.data.id) ?? [];
+	const threadIds = threadsData?.filter((t) => t.view === 'triage').map((t) => t.data.id) ?? [];
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: threadIds updates on ever render
 	const threads = useMemo(() => {
