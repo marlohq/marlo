@@ -88,6 +88,9 @@ importers:
       '@tiptap/extension-table':
         specifier: ^3.2.0
         version: 3.2.0(@tiptap/core@3.2.0(@tiptap/pm@3.2.0))(@tiptap/pm@3.2.0)
+      '@tiptap/extension-typography':
+        specifier: ^3.8.0
+        version: 3.8.0(@tiptap/core@3.2.0(@tiptap/pm@3.2.0))
       '@tiptap/extensions':
         specifier: ^3.2.0
         version: 3.2.0(@tiptap/core@3.2.0(@tiptap/pm@3.2.0))(@tiptap/pm@3.2.0)
@@ -3231,6 +3234,11 @@ packages:
     peerDependencies:
       '@tiptap/core': ^3.2.0
 
+  '@tiptap/extension-typography@3.8.0':
+    resolution: {integrity: sha512-T4Fojz4NqWjoD7/396/JtkKIkUGsq8CuC3T0cU9ozvc3SLoDJKuQc5HNNZ+7kHuHTjz7kGj631LQDyZ7PfVdtA==}
+    peerDependencies:
+      '@tiptap/core': ^3.8.0
+
   '@tiptap/extension-underline@3.2.0':
     resolution: {integrity: sha512-0ObBGqgeOAhQpNdNRJcu23GVQodtVp5dBYNC9vSW+mcJPRQy3Sc+kv59pqyrH0qV4SwtzzeKQSHuNaQpMPOU5A==}
     peerDependencies:
@@ -4098,7 +4106,7 @@ packages:
     engines: {node: '>= 10'}
 
   concat-map@0.0.1:
-    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
+    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
 
   confbox@0.1.8:
     resolution: {integrity: sha512-RMtmw0iFkeR4YV+fUOSucriAQNb9g8zFR52MWCtl+cCZOFRNL6zeB395vPzFhEjjn4fMxXudmELnl/KF/WrK6w==}
@@ -10814,6 +10822,10 @@ snapshots:
       '@tiptap/pm': 3.2.0
 
   '@tiptap/extension-text@3.2.0(@tiptap/core@3.2.0(@tiptap/pm@3.2.0))':
+    dependencies:
+      '@tiptap/core': 3.2.0(@tiptap/pm@3.2.0)
+
+  '@tiptap/extension-typography@3.8.0(@tiptap/core@3.2.0(@tiptap/pm@3.2.0))':
     dependencies:
       '@tiptap/core': 3.2.0(@tiptap/pm@3.2.0)
 

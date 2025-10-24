@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import Image from '@tiptap/extension-image';
 import { TableKit } from '@tiptap/extension-table';
+import Typography from '@tiptap/extension-typography';
 import { Placeholder } from '@tiptap/extensions';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -115,6 +116,12 @@ export function useComposerEditor({
 				StreamContent,
 				EmbeddedHTML,
 				Placeholder.configure({ placeholder }),
+				Typography.configure({
+					oneHalf: false,
+					oneQuarter: false,
+					threeQuarters: false,
+					ellipsis: false,
+				}),
 			],
 			content: initialContent,
 			editorProps: {
