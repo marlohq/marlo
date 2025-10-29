@@ -10,6 +10,7 @@ import { connectionHub } from './connections.ts';
 import './db-connection.js';
 
 import { captureException } from '@workspace/core/instrument.js';
+import { account as accountTable, db, eq } from '@workspace/core/drizzle.js';
 import { logger as baseLogger } from '@workspace/core/logger.js';
 import type { ClientSyncState } from '@workspace/sync-data/schema.js';
 import { verifyJWT } from './auth.ts';
@@ -151,6 +152,17 @@ async function performMutation({
 	const t0 = performance.now();
 	const { table, action } = message;
 	logger.debug({ accountId, userId, table, action }, 'received mutation');
+
+	// Check account status before mutation - if in ERROR state, throw
+	const account = await db.query.account.findFirst({
+		where: eq(accountTable.id, accountId),
+		columns: { status: true },
+	});
+
+	if (!account || account.status !== 'ACTIVE') {
+		throw new Error('Account is not active');
+	}
+
 	switch (table) {
 		case 'Account': {
 			await mutateAccount(accountId, message);
@@ -258,6 +270,19 @@ async function triggerSync(connection: ClientConnection, clientState: ClientSync
 	const t0 = performance.now();
 	const { accountId, userId } = connection;
 	logger.debug({ accountId }, 'Starting sync');
+
+	// Check account status before sync - if in ERROR state, close connection
+	const account = await db.query.account.findFirst({
+		where: eq(accountTable.id, accountId),
+		columns: { status: true },
+	});
+
+	if (!account || account.status !== 'ACTIVE') {
+		logger.info({ accountId }, 'Account is not active, closing sync connection');
+		connection.socket.close(1008, 'Account authentication failed');
+		return;
+	}
+
 	connection.setSyncStatus('syncing');
 	for await (const message of sync({ accountId, userId, clientState })) {
 		// If the socket is closed, stop the sync.

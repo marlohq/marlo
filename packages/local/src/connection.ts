@@ -2,6 +2,7 @@ import type { ClientMessage } from '@workspace/sync-data/client-messages.ts';
 import type { ThreadData } from '@workspace/sync-data/data.js';
 import type { ClientSyncState, SyncableTable } from '@workspace/sync-data/schema.js';
 import type { ServerMessage } from '@workspace/sync-data/server-messages.ts';
+import { handleAccountError } from '@workspace/core/auth-error.js';
 import { getJWT } from './auth.ts';
 import { getDatabase } from './database.ts';
 import { perf } from './perf.ts';
@@ -266,9 +267,13 @@ class Connection extends EventTarget {
 	onclose = (event: CloseEvent) => {
 		this.setStatus('disconnected');
 
-		// Handle authentication failures (JWT invalid/expired)
+		// Handle authentication failures (JWT invalid/expired, or account in ERROR state)
+		// Code 1008 means the server determined the session is no longer valid
+		// This can happen when:
+		// - JWT expires or becomes invalid
+		// - Account enters ERROR state (OAuth token refresh failed)
 		if (event.code === 1008 || event.reason?.includes('JWT')) {
-			window.location.href = '/login';
+			handleAccountError();
 			return;
 		}
 
