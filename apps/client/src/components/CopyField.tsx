@@ -33,6 +33,7 @@ export function CopyField({
 				className="hover:underline"
 				onClick={async (e) => {
 					e.preventDefault();
+					e.stopPropagation();
 					await navigator.clipboard.writeText(text);
 					setIsCopied(true);
 					setIsOpen(true);

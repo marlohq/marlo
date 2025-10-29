@@ -584,7 +584,20 @@ function Body({
 
 	const { quoteHTML, contentHTML } = parseHTML(content.html || content.text);
 	return (
-		<div className="overflow-auto px-4 sm:px-8" ref={ref}>
+		// biome-ignore lint/a11y/noStaticElementInteractions: This is intentionally mouse-only behavior, for now.
+		// biome-ignore lint/a11y/useKeyWithClickEvents: This is intentionally mouse-only behavior, for now.
+		<div
+			className="overflow-auto px-4 sm:px-8"
+			ref={ref}
+			onClick={(e) => {
+				const target = e.target as HTMLElement;
+				const hasSelection = (window.getSelection()?.toString().length ?? 0) > 0;
+				// Prevent collapse when interacting with links/buttons or selecting text
+				if (target.tagName === 'A' || target.closest('a, button') || hasSelection) {
+					e.stopPropagation();
+				}
+			}}
+		>
 			<ShadowMail
 				messageId={message.data.id}
 				className={cn(content.html ? '' : 'whitespace-pre-wrap')}
