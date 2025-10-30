@@ -122,6 +122,9 @@ export async function getActiveAccountOrThrow(context: { locals: App.Locals }) {
 	if (currentAccount.user.status === 'INACTIVE') {
 		throw new ORPCError('FORBIDDEN');
 	}
+	if (currentAccount.status === 'ERROR') {
+		throw new ORPCError('UNAUTHORIZED');
+	}
 	return currentAccount;
 }
 
