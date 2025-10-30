@@ -9,8 +9,8 @@ import type { Connection as ClientConnection } from './connection.ts';
 import { connectionHub } from './connections.ts';
 import './db-connection.js';
 
-import { captureException } from '@workspace/core/instrument.js';
 import { account as accountTable, db, eq } from '@workspace/core/drizzle.js';
+import { captureException } from '@workspace/core/instrument.js';
 import { logger as baseLogger } from '@workspace/core/logger.js';
 import type { ClientSyncState } from '@workspace/sync-data/schema.js';
 import { verifyJWT } from './auth.ts';

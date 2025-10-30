@@ -1,8 +1,8 @@
+import { handleAccountError } from '@workspace/core/auth-error.js';
 import type { ClientMessage } from '@workspace/sync-data/client-messages.ts';
 import type { ThreadData } from '@workspace/sync-data/data.js';
 import type { ClientSyncState, SyncableTable } from '@workspace/sync-data/schema.js';
 import type { ServerMessage } from '@workspace/sync-data/server-messages.ts';
-import { handleAccountError } from '@workspace/core/auth-error.js';
 import { getJWT } from './auth.ts';
 import { getDatabase } from './database.ts';
 import { perf } from './perf.ts';

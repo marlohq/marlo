@@ -1,12 +1,11 @@
 import { isElectron } from './electron.ts';
 
 /**
- * Handle account authentication errors (ERROR state, expired JWT, etc.)
- * Clears auth state and redirects to login.
- * Fire-and-forget - doesn't wait for completion.
+ * Handle account authentication errors (ERROR state, expired JWT, etc.) Clears auth state and
+ * redirects to login. Fire-and-forget - doesn't wait for completion.
  *
- * Web: Redirects to /login. Middleware will clear cookies on next request.
- * Electron: Clears auth tokens via IPC, then triggers login flow.
+ * Web: Redirects to /login. Middleware will clear cookies on next request. Electron: Clears auth
+ * tokens via IPC, then triggers login flow.
  */
 export function handleAccountError(): void {
 	if (isElectron) {
