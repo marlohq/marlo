@@ -70,16 +70,19 @@ const createWindow = () => {
 		},
 	});
 
-	mainWindow.loadURL(app.isPackaged ? 'marlo://app/' : DEV_BASE_URL);
+	mainWindow.loadURL(app.isPackaged ? `${PROTOCOL_SCHEME}://app/` : DEV_BASE_URL);
 	setupApplicationMenu();
 
 	return mainWindow;
 };
 
+// Use different protocol for dev vs production
+const PROTOCOL_SCHEME = app.isPackaged ? 'marlo' : 'marlo-dev';
+
 // Register protocol privileges before app ready
 protocol.registerSchemesAsPrivileged([
 	{
-		scheme: 'marlo',
+		scheme: PROTOCOL_SCHEME,
 		privileges: {
 			standard: true,
 			secure: true,
@@ -92,10 +95,12 @@ protocol.registerSchemesAsPrivileged([
 
 if (process.defaultApp) {
 	if (process.argv.length >= 2) {
-		app.setAsDefaultProtocolClient('marlo', process.execPath, [path.resolve(process.argv[1])]);
+		app.setAsDefaultProtocolClient(PROTOCOL_SCHEME, process.execPath, [
+			path.resolve(process.argv[1]),
+		]);
 	}
 } else {
-	app.setAsDefaultProtocolClient('marlo');
+	app.setAsDefaultProtocolClient(PROTOCOL_SCHEME);
 }
 
 app.whenReady().then(async () => {
@@ -103,7 +108,7 @@ app.whenReady().then(async () => {
 	app.setName('Marlo');
 
 	// Set up protocol handler to serve app content
-	protocol.handle('marlo', (request) => {
+	protocol.handle(PROTOCOL_SCHEME, (request) => {
 		const url = new URL(request.url);
 
 		// Handle auth URLs (existing functionality)
@@ -199,8 +204,8 @@ app.whenReady().then(async () => {
 	app.on('open-url', (_event, originalUrl) => {
 		const url = new URL(originalUrl);
 
-		// If auth
-		if (url.protocol === 'marlo:' && url.hostname === 'auth') {
+		// If auth - check both protocols
+		if ((url.protocol === 'marlo:' || url.protocol === 'marlo-dev:') && url.hostname === 'auth') {
 			const session = url.searchParams.get(SESSION_COOKIE_NAME);
 			const refresh = url.searchParams.get(REFRESH_COOKIE_NAME);
 

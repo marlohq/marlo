@@ -9,8 +9,12 @@ export function getAssetPath(assetPath: string): string {
 	const normalizedPath = assetPath.startsWith('/') ? assetPath : `/${assetPath}`;
 
 	if (isElectron) {
-		// In Electron, we need to use the marlo://app protocol
-		return `marlo://app${normalizedPath}`;
+		// In Electron, detect protocol from current location (marlo-dev:// for dev, marlo:// for prod)
+		const protocol =
+			typeof window !== 'undefined' && window.location.protocol.startsWith('marlo-dev')
+				? 'marlo-dev:'
+				: 'marlo:';
+		return `${protocol}//app${normalizedPath}`;
 	}
 
 	// In web, use the normal path

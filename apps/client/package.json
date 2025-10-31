@@ -7,7 +7,8 @@
 	"exports": {
 		"./App": "./src/App.tsx",
 		"./logout": "./src/lib/logout.ts",
-		"./styles": "./styles/base.css"
+		"./styles": "./styles/base.css",
+		"./assets/*": "./src/assets/*"
 	},
 	"scripts": {
 		"build": "vite build",

@@ -187,7 +187,9 @@ export function generateAuthDeeplink({
 	refresh?: string;
 	error?: string;
 }) {
-	const url = new URL('marlo://auth');
+	// Use marlo-dev:// for dev, marlo:// for production
+	const protocol = import.meta.env.DEV ? 'marlo-dev' : 'marlo';
+	const url = new URL(`${protocol}://auth`);
 
 	if (session) {
 		url.searchParams.set('session', session);

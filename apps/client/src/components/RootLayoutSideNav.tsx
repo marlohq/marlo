@@ -11,6 +11,7 @@ import { prependBackendUrl } from '@workspace/core/url.js';
 import { useQuery } from '@workspace/local/query.js';
 import { Button } from '@workspace/ui';
 import { Link, NavLink } from 'react-router';
+import logom from '../assets/logom.jpg';
 import { ZapIcon } from '../icons/ZapIcon.tsx';
 import { getCustomSpacesQuery } from '../lib/queries.ts';
 import { cn } from '../lib/util.ts';
@@ -110,7 +111,7 @@ export function RootLayoutSideNav() {
 	return (
 		<nav aria-label="Primary" className="flex h-full shrink-0 flex-col items-center">
 			<div className="flex h-16 w-full flex-col items-center justify-center">
-				<img src="/logom.jpg" className="size-8 rounded-md" alt="" />
+				<img src={logom.src} className="size-8 rounded-md" alt="" />
 			</div>
 			<div className="flex w-full flex-col items-center gap-1">
 				<IconLink to="/" label="Priority">
