@@ -45,45 +45,6 @@ export const GET: APIRoute = async ({ url, locals, cookies, params, redirect: as
 	cookies.delete('oauth_state', { path: '/' });
 	cookies.delete('oauth_codeverifier', { path: '/' });
 
-	const platformRedirect = (path: string) => {
-		cookies.delete('oauth_platform', { path: '/' });
-		// If platform is desktop, redirect to a success pagbe that triggers deep link
-		if (platform === 'desktop') {
-			// Get session cookies that were just set
-			const sessionCookie = cookies.get('session')?.value;
-			const refreshCookie = cookies.get('refresh')?.value;
-
-			// Build deep link URL with auth tokens
-			const deepLinkUrl = generateAuthDeeplink({
-				session: sessionCookie,
-				refresh: refreshCookie,
-			});
-
-			// Add any error from original path
-			const pathUrl = new URL(path, url);
-			const error = pathUrl.searchParams.get('error');
-			if (error) deepLinkUrl.searchParams.set('error', error);
-
-			// Redirect to a success page that will handle the deep link
-			const successUrl = new URL('/auth/desktop-success', url);
-			successUrl.searchParams.set('deeplink', deepLinkUrl.toString());
-			return astroRedirect(successUrl.toString());
-		}
-
-		// Normal web redirect
-		const redirectUrl = new URL(path, url);
-		if (platform) {
-			// Check if the path already has query parameters
-			if (redirectUrl.search) {
-				redirectUrl.searchParams.append('platform', platform);
-			} else {
-				redirectUrl.searchParams.set('platform', platform);
-			}
-		}
-		return astroRedirect(redirectUrl.toString());
-	};
-
-	const redirect = platform ? platformRedirect : astroRedirect;
 
 	if (error) {
 		// Preserve platform parameter in error redirects
@@ -97,13 +58,13 @@ export const GET: APIRoute = async ({ url, locals, cookies, params, redirect: as
 				});
 				const successUrl = new URL('/auth/desktop-success', url);
 				successUrl.searchParams.set('deeplink', deepLinkUrl.toString());
-				return redirect(successUrl.toString());
+				return astroRedirect(successUrl.toString());
 			}
 
-			return redirect(`/?error=${error}&platform=${platform}`);
+			return astroRedirect(`/?error=${error}&platform=${platform}`);
 		}
 
-		return redirect(`/?error=${error}`);
+		return astroRedirect(`/?error=${error}`);
 	}
 	if (!code) {
 		return new Response('Missing code parameter', { status: 400 });
@@ -170,7 +131,7 @@ export const GET: APIRoute = async ({ url, locals, cookies, params, redirect: as
 		// Check if the account has valid tokens, and if not, prompt the user to reauthorize the scopes.
 		if (loginAsAccount && (await accountNeedsReauthorization(loginAsAccount))) {
 			logger.error({ loginAsAccount: loginAsAccount.id }, 'reauthorization required');
-			return redirect(`/auth/google/authorize?reauthorize=true&login_hint=${loginAsAccount.email}`);
+			return astroRedirect(`/auth/google/authorize?reauthorize=true&login_hint=${loginAsAccount.email}`);
 		}
 
 		await createCookiesOnSuccessfulLogin(cookies, loginAsAccount);
@@ -194,7 +155,23 @@ export const GET: APIRoute = async ({ url, locals, cookies, params, redirect: as
 		}
 
 		logger.info({ loginAsAccount: loginAsAccount.id }, 'login completed');
-		return redirect('/');
+
+		// Handle desktop redirect with auth tokens
+		cookies.delete('oauth_platform', { path: '/' });
+		if (platform === 'desktop') {
+			const sessionCookie = cookies.get('session')?.value;
+			const refreshCookie = cookies.get('refresh')?.value;
+			const deepLinkUrl = generateAuthDeeplink({
+				session: sessionCookie,
+				refresh: refreshCookie,
+			});
+			const successUrl = new URL('/auth/desktop-success', url);
+			successUrl.searchParams.set('deeplink', deepLinkUrl.toString());
+			return astroRedirect(successUrl.toString());
+		}
+
+		// Normal web redirect
+		return astroRedirect('/');
 	};
 
 	////////////////////////////////////////////////////////////
@@ -221,7 +198,7 @@ export const GET: APIRoute = async ({ url, locals, cookies, params, redirect: as
 		// Don't allow a user to login with a different account that already exists in our system.
 		if (currentAccount.userId !== existingAccount.userId) {
 			logFlow('error.account_already_exists');
-			return redirect('/?error=account_already_exists');
+			return astroRedirect('/?error=account_already_exists');
 		}
 		logFlow('auth.switch_account');
 		const updatedAccount = await updateAccount({
