@@ -1,5 +1,6 @@
 ---
 import '@workspace/client/styles';
+import logom from '@workspace/client/assets/logom.jpg';
 import FAQ from '../components/FAQ.astro';
 import * as manifesto from '../content/manifesto.md';
 import footer from '../images/banner-footer.png';
@@ -38,7 +39,7 @@ const { Content, frontmatter } = manifesto;
 		<header class="relative flex items-center justify-between gap-4 py-6 sm:pt-10">
 			<div class="mx-auto flex w-full max-w-screen-sm items-center justify-between gap-4">
 				<a href="/" class="flex items-center gap-2 text-xl font-medium text-neutral-900">
-					<img src="/logom.jpg" alt="Marlo" class="size-8" />
+					<img src={logom.src} alt="Marlo" class="size-8" />
 				</a>
 				<a
 					id="login"
