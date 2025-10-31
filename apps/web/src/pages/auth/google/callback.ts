@@ -45,7 +45,6 @@ export const GET: APIRoute = async ({ url, locals, cookies, params, redirect: as
 	cookies.delete('oauth_state', { path: '/' });
 	cookies.delete('oauth_codeverifier', { path: '/' });
 
-
 	if (error) {
 		// Preserve platform parameter in error redirects
 		if (platform) {
@@ -131,7 +130,9 @@ export const GET: APIRoute = async ({ url, locals, cookies, params, redirect: as
 		// Check if the account has valid tokens, and if not, prompt the user to reauthorize the scopes.
 		if (loginAsAccount && (await accountNeedsReauthorization(loginAsAccount))) {
 			logger.error({ loginAsAccount: loginAsAccount.id }, 'reauthorization required');
-			return astroRedirect(`/auth/google/authorize?reauthorize=true&login_hint=${loginAsAccount.email}`);
+			return astroRedirect(
+				`/auth/google/authorize?reauthorize=true&login_hint=${loginAsAccount.email}`,
+			);
 		}
 
 		await createCookiesOnSuccessfulLogin(cookies, loginAsAccount);
