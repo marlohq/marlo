@@ -4,8 +4,8 @@ import { invariant } from 'es-toolkit';
 import z from 'zod';
 import { GH_FETCH_RELEASE_TOKEN } from '../../env.ts';
 
-const REPO_OWNER = 'astrotechco';
-const REPO_NAME = 'magicthing';
+const REPO_OWNER = 'marlohq';
+const REPO_NAME = 'marlo';
 
 const releaseCache = new LRU<string, string>({ maxAge: 1000 * 60 * 5, maxSize: 1000 });
 
