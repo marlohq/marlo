@@ -2,14 +2,6 @@
 
 An AI-powered email client that helps you manage your inbox intelligently.
 
-## Tech Stack
-
-- **Frontend:** Astro
-- **Backend:** Node.js with WebSocket sync service
-- **Database:** PostgreSQL 16 with Drizzle ORM
-- **Cache:** Redis
-- **Email Processing:** Background job queues with BullMQ
-
 ## Contributing
 
 Want to contribute? Check out our [Contributing Guide](CONTRIBUTING.md) for setup instructions and development workflows.
