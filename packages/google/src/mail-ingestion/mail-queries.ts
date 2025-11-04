@@ -13,6 +13,7 @@ import {
 	SYSTEM_LABEL_IDS,
 	TRASH_LABEL_ID,
 } from '@workspace/core/labels.js';
+import { getInboxSpaceId } from '@workspace/core/space.js';
 import type { MailAttachement } from '@workspace/core/mail-parser.js';
 import { createAttachmentHash } from '@workspace/core/storage/attachments.js';
 import { createId } from '@workspace/core/util.js';
@@ -95,7 +96,7 @@ export function prepareConsumeMailQuery(
 
 	const threadId = createId();
 	const isSelfSent = (mailInfo.fromEmail || '').toLowerCase() === accountEmail.toLowerCase();
-	const initialSpaceId: string | null = isSelfSent ? `inbox_${accountId}` : null;
+	const initialSpaceId: string | null = isSelfSent ? getInboxSpaceId(accountId) : null;
 
 	// Build SQL using our helper function
 	const sqlQuery = buildSqlQuery(
@@ -232,7 +233,8 @@ function buildThreadUpsertCte(
       "lastSentAt" = GREATEST("Thread"."lastSentAt", ${utcLastSentDate}::timestamptz),
       "updatedAt" = (SELECT timestamp FROM vars),
 	  "triagedAt" = ${shouldBeResolved ? sql`(SELECT timestamp FROM vars)` : sql`"Thread"."triagedAt"`},
-	  "deletedAt" = NULL
+	  "deletedAt" = NULL,
+	  "spaceId" = ${initialSpaceId ? sql`${initialSpaceId}` : sql`"Thread"."spaceId"`}
     RETURNING "id"
   )`;
 }
