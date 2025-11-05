@@ -2,57 +2,13 @@ import path from 'node:path';
 import url from 'node:url';
 import { REFRESH_COOKIE_NAME, SESSION_COOKIE_NAME } from '@workspace/core/cookies.js';
 import { app, BrowserWindow, globalShortcut, net, protocol, session, shell } from 'electron';
-import electronUpdater from 'electron-updater';
 import { attachAuthTokensToHeaders, attachAuthTokensToRequestHeaders } from './auth.js';
+import { checkForUpdates, setupAutoUpdater } from './auto-update.js';
 import { DEV_BASE_URL } from './consts.js';
 import { setupGlobalIPC } from './ipc.js';
 import { setupApplicationMenu } from './menu.js';
 
-const autoUpdater = electronUpdater.autoUpdater;
-
 const dirname = path.dirname(url.fileURLToPath(import.meta.url));
-
-// Configure auto-updater
-if (!app.isPackaged) {
-	// In development, disable auto-updater
-	autoUpdater.updateConfigPath = path.join(dirname, 'dev-app-update.yml');
-}
-
-// Auto-updater initialization - will be called after app ready
-
-// Auto-updater event handlers (only in packaged app)
-if (app.isPackaged) {
-	autoUpdater.on('checking-for-update', () => {
-		// console.log('Checking for update...');
-	});
-
-	autoUpdater.on('update-available', (info) => {
-		// console.log('Update available:', info);
-	});
-
-	autoUpdater.on('update-not-available', (info) => {
-		// console.log('Update not available:', info);
-	});
-
-	autoUpdater.on('error', (err) => {
-		// console.log('Error in auto-updater:', err);
-	});
-
-	autoUpdater.on('download-progress', (progressObj) => {
-		let log_message = `Download speed: ${progressObj.bytesPerSecond}`;
-		log_message = `${log_message} - Downloaded ${progressObj.percent}%`;
-		log_message = `${log_message} (${progressObj.transferred}/${progressObj.total})`;
-		// console.log(log_message);
-	});
-
-	autoUpdater.on('update-downloaded', (info) => {
-		// console.log('Update downloaded:', info);
-		// You can choose to auto-restart or show a dialog to the user
-		autoUpdater.quitAndInstall();
-	});
-} else {
-	// console.info('Auto-updater disabled in development mode');
-}
 
 const createWindow = () => {
 	const mainWindow = new BrowserWindow({
@@ -177,45 +133,61 @@ app.whenReady().then(async () => {
 		}
 	});
 
-	// Initialize auto-updater after app is ready
-	if (app.isPackaged) {
-		autoUpdater.checkForUpdatesAndNotify();
+	// Track the main window reference
+	let mainWindow: BrowserWindow | null = null;
 
-		// TODO block if there is a new version
-	}
+	// Setup window event handlers
+	const setupWindowHandlers = (window: BrowserWindow) => {
+		// Handle window open requests
+		window.webContents.setWindowOpenHandler(({ url }: { url: string }) => {
+			// For now, open in external browser
+			// Later we can create new tabs for same-origin URLs
+			shell.openExternal(url);
+			return { action: 'deny' };
+		});
 
-	const mainWindow = createWindow();
+		app.on('activate', () => {
+			if (BrowserWindow.getAllWindows().length === 0) {
+				mainWindow = createWindow();
+				setupGlobalIPC(mainWindow);
+				setupWindowHandlers(mainWindow);
+			}
+		});
 
-	// Setup IPC handlers
-	setupGlobalIPC(mainWindow);
+		app.on('open-url', (_event, originalUrl) => {
+			const url = new URL(originalUrl);
 
-	// Handle window open requests
-	mainWindow.webContents.setWindowOpenHandler(({ url }: { url: string }) => {
-		// For now, open in external browser
-		// Later we can create new tabs for same-origin URLs
-		shell.openExternal(url);
-		return { action: 'deny' };
+			// If auth - check both protocols
+			if ((url.protocol === 'marlo:' || url.protocol === 'marlo-dev:') && url.hostname === 'auth') {
+				const session = url.searchParams.get(SESSION_COOKIE_NAME);
+				const refresh = url.searchParams.get(REFRESH_COOKIE_NAME);
+
+				// Send login URL to the main window
+				if (mainWindow && !mainWindow.isDestroyed()) {
+					mainWindow.webContents.send('login', {
+						session,
+						refresh,
+					});
+					mainWindow.focus();
+				}
+			}
+		});
+	};
+
+	// Setup auto-updater event handlers
+	setupAutoUpdater(() => {
+		// Called when update check is complete and it's safe to create window
+		mainWindow = createWindow();
+		setupGlobalIPC(mainWindow);
+		setupWindowHandlers(mainWindow);
 	});
 
-	app.on('activate', () => {
-		if (BrowserWindow.getAllWindows().length === 0) createWindow();
-	});
-
-	app.on('open-url', (_event, originalUrl) => {
-		const url = new URL(originalUrl);
-
-		// If auth - check both protocols
-		if ((url.protocol === 'marlo:' || url.protocol === 'marlo-dev:') && url.hostname === 'auth') {
-			const session = url.searchParams.get(SESSION_COOKIE_NAME);
-			const refresh = url.searchParams.get(REFRESH_COOKIE_NAME);
-
-			// Send login URL to the main window
-			mainWindow.webContents.send('login', {
-				session,
-				refresh,
-			});
-			mainWindow.focus();
-		}
+	// Check for updates - blocks until complete (or creates window if no update needed)
+	await checkForUpdates(() => {
+		// Called when update check is complete and it's safe to create window
+		mainWindow = createWindow();
+		setupGlobalIPC(mainWindow);
+		setupWindowHandlers(mainWindow);
 	});
 });
 
