@@ -53,7 +53,7 @@ jobs:
       - name: Setup Apple API Key
         run: |
           mkdir -p ~/private_keys
-          echo "${{ secrets.APPLE_API_KEY }}" > ~/private_keys/AuthKey_${{ secrets.APPLE_API_KEY_ID }}.p8
+          echo "${{ secrets.APPLE_API_KEY }}" | base64 --decode > ~/private_keys/AuthKey_${{ secrets.APPLE_API_KEY_ID }}.p8
 
       # NOTE(fks, 2025-08-26): We intentionally don't use Doppler for this step because we
       # shouldn't need to. Currently, all secrets needed to build the desktop client should be
