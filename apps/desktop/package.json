@@ -1,5 +1,6 @@
 {
-	"name": "@workspace/desktop",
+	"name": "marlo",
+	"productName": "Marlo",
 	"description": "Intelligent email for busy people.",
 	"type": "module",
 	"version": "0.0.1",
