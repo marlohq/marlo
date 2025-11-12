@@ -1,25 +1,23 @@
 import path from 'node:path';
 import url from 'node:url';
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import electronUpdater from 'electron-updater';
 
 const autoUpdater = electronUpdater.autoUpdater;
 const dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
-// Test mode for simulating updates in development
-const SIMULATE_UPDATE = process.env.SIMULATE_UPDATE === 'true';
-
-// Configure auto-updater
+// Configure auto-updater for development
 if (!app.isPackaged) {
-	// In development, disable auto-updater
 	autoUpdater.updateConfigPath = path.join(dirname, 'dev-app-update.yml');
 }
 
-// Track state
+// State management
 let splashWindow: BrowserWindow | null = null;
+let splashWindowReady = false;
 
-// Create a simple splash window for updates
-const createSplashWindow = () => {
+// Create and display splash window for update progress
+const createSplashWindow = async () => {
+	splashWindowReady = false;
 	splashWindow = new BrowserWindow({
 		width: 400,
 		height: 200,
@@ -29,12 +27,11 @@ const createSplashWindow = () => {
 		resizable: false,
 		center: true,
 		webPreferences: {
-			nodeIntegration: false,
-			contextIsolation: true,
+			nodeIntegration: true,
+			contextIsolation: false,
 		},
 	});
 
-	// Simple HTML for splash screen
 	splashWindow.loadURL(
 		`data:text/html;charset=utf-8,${encodeURIComponent(`
 		<!DOCTYPE html>
@@ -105,6 +102,18 @@ const createSplashWindow = () => {
 					.button.visible {
 						display: inline-block;
 					}
+					.button.secondary {
+						background: #6b7280;
+						margin-left: 8px;
+					}
+					.button.secondary:hover {
+						background: #4b5563;
+					}
+					.button-group {
+						display: flex;
+						justify-content: center;
+						gap: 8px;
+					}
 				</style>
 			</head>
 			<body>
@@ -114,56 +123,118 @@ const createSplashWindow = () => {
 						<div class="progress-bar" id="progress"></div>
 					</div>
 					<div class="status" id="status">Checking for updates...</div>
-					<button class="button" id="retryBtn" onclick="window.electronAPI?.retryUpdate()">Retry Update</button>
+					<div class="button-group">
+						<button class="button" id="retryBtn">Retry Update</button>
+						<button class="button secondary" id="exitBtn">Exit</button>
+					</div>
 				</div>
 				<script>
-					window.electronAPI = {
-						retryUpdate: () => {
-							// Send message back to main process
-							const event = new CustomEvent('retry-update');
-							window.dispatchEvent(event);
-						}
-					};
+					const { ipcRenderer } = require('electron');
+					document.getElementById('retryBtn')?.addEventListener('click', () => {
+						ipcRenderer.send('update-retry');
+					});
+					document.getElementById('exitBtn')?.addEventListener('click', () => {
+						ipcRenderer.send('update-exit');
+					});
 				</script>
 			</body>
 		</html>
 	`)}`,
 	);
 
+	// Wait for DOM to be ready, otherwise sending JavaScript might fail
+	await new Promise<void>((resolve) => {
+		if (!splashWindow) {
+			resolve();
+			return;
+		}
+		splashWindow.webContents.on('did-finish-load', () => {
+			splashWindowReady = true;
+			resolve();
+		});
+	});
+
 	return splashWindow;
 };
 
+// Update splash window progress bar and status
 const updateSplashProgress = (percent: number, status: string, showRetry = false) => {
-	if (splashWindow && !splashWindow.isDestroyed()) {
-		const isError = showRetry;
-		splashWindow.webContents.executeJavaScript(`
-			document.getElementById('progress').style.width = '${percent}%';
+	if (!splashWindow?.webContents || splashWindow.isDestroyed() || !splashWindowReady) return;
+
+	splashWindow.webContents
+		.executeJavaScript(
+			`
+		(() => {
+			const progress = document.getElementById('progress');
 			const statusEl = document.getElementById('status');
-			statusEl.textContent = '${status}';
-			statusEl.className = 'status${isError ? ' error' : ''}';
 			const retryBtn = document.getElementById('retryBtn');
-			if (${showRetry}) {
-				retryBtn.classList.add('visible');
-			} else {
-				retryBtn.classList.remove('visible');
+			const exitBtn = document.getElementById('exitBtn');
+
+			if (progress) progress.style.width = '${percent}%';
+			if (statusEl) {
+				statusEl.textContent = '${status}';
+				statusEl.className = 'status${showRetry ? ' error' : ''}';
 			}
-		`);
-	}
+			if (retryBtn) {
+				retryBtn.className = 'button${showRetry ? ' visible' : ''}';
+			}
+			if (exitBtn) {
+				exitBtn.className = 'button secondary${showRetry ? ' visible' : ''}';
+			}
+		})();
+	`,
+		)
+		.catch(() => {
+			// Ignore errors
+		});
 };
 
+// Close splash window
 const closeSplash = () => {
-	if (splashWindow && !splashWindow.isDestroyed()) {
+	if (splashWindow?.isDestroyed() === false) {
 		splashWindow.close();
 		splashWindow = null;
+		splashWindowReady = false;
 	}
 };
 
-// Simulate an update for testing in development
+// Track simulation failures
+let simulationHasFailed = false;
+
+// Simulate update process for development testing
 const simulateUpdate = async (onComplete: () => void) => {
-	createSplashWindow();
+	await createSplashWindow();
 	updateSplashProgress(0, 'Checking for updates...');
 
 	await new Promise((resolve) => setTimeout(resolve, 1500));
+	
+	// Fail on first attempt
+	if (!simulationHasFailed) {
+		simulationHasFailed = true;
+		updateSplashProgress(0, 'Update error: Network connection failed', true);
+		
+		// Setup retry and exit handlers
+		const retryHandler = () => {
+			closeSplash();
+			simulateUpdate(onComplete);
+		};
+		
+		const exitHandler = () => {
+			closeSplash();
+			app.quit();
+		};
+		
+		ipcMain.once('update-retry', retryHandler);
+		ipcMain.once('update-exit', exitHandler);
+		
+		splashWindow?.once('closed', () => {
+			ipcMain.removeListener('update-retry', retryHandler);
+			ipcMain.removeListener('update-exit', exitHandler);
+		});
+		
+		return;
+	}
+	
 	updateSplashProgress(0, 'Update found, downloading...');
 
 	// Simulate download progress
@@ -182,77 +253,74 @@ const simulateUpdate = async (onComplete: () => void) => {
 
 // Setup auto-updater event handlers
 export const setupAutoUpdater = (onComplete: () => void) => {
-	if (app.isPackaged) {
-		autoUpdater.on('checking-for-update', () => {
-			// Checking for update...
-			if (!splashWindow) {
-				createSplashWindow();
-			}
-			updateSplashProgress(0, 'Checking for updates...', false);
-		});
+	if (!app.isPackaged) return;
 
-		autoUpdater.on('update-available', (_info) => {
-			// Update available - don't create window yet, wait for download
-			updateSplashProgress(0, 'Update found, downloading...', false);
-		});
+	autoUpdater.on('checking-for-update', async () => {
+		if (!splashWindow) {
+			await createSplashWindow();
+		}
+		updateSplashProgress(0, 'Checking for updates...');
+	});
 
-		autoUpdater.on('update-not-available', (_info) => {
-			// No update available, safe to create window
+	autoUpdater.on('update-available', () => {
+		updateSplashProgress(0, 'Update found, downloading...');
+	});
+
+	autoUpdater.on('update-not-available', () => {
+		closeSplash();
+		onComplete();
+	});
+
+	autoUpdater.on('error', (err) => {
+		const errorMessage = err.message || 'Unknown error occurred';
+		updateSplashProgress(0, `Update error: ${errorMessage}`, true);
+
+		// Setup retry handler
+		const retryHandler = () => {
 			closeSplash();
-			onComplete();
+			autoUpdater.checkForUpdates();
+		};
+
+		// Setup exit handler
+		const exitHandler = () => {
+			closeSplash();
+			app.quit();
+		};
+
+		ipcMain.once('update-retry', retryHandler);
+		ipcMain.once('update-exit', exitHandler);
+
+		// Clean up if window closes
+		splashWindow?.once('closed', () => {
+			ipcMain.removeListener('update-retry', retryHandler);
+			ipcMain.removeListener('update-exit', exitHandler);
 		});
+	});
 
-		autoUpdater.on('error', (err) => {
-			// On error, show error message with retry button
-			const errorMessage = err.message || 'Unknown error occurred';
-			updateSplashProgress(0, `Update error: ${errorMessage}`, true);
+	autoUpdater.on('download-progress', (progressObj) => {
+		const percent = Math.round(progressObj.percent);
+		const speed = Math.round(progressObj.bytesPerSecond / 1024);
+		updateSplashProgress(percent, `Downloading update... ${percent}% (${speed} KB/s)`);
+	});
 
-			// Set up retry listener
-			if (splashWindow && !splashWindow.isDestroyed()) {
-				splashWindow.webContents.executeJavaScript(`
-					document.getElementById('retryBtn').onclick = () => {
-						window.location.reload();
-					};
-				`);
-
-				// Listen for the retry button click
-				splashWindow.webContents.on('will-navigate', (event) => {
-					event.preventDefault();
-					// Retry the update check
-					closeSplash();
-					autoUpdater.checkForUpdates();
-				});
-			}
-		});
-
-		autoUpdater.on('download-progress', (progressObj) => {
-			// Downloading update...
-			const percent = Math.round(progressObj.percent);
-			const speed = Math.round(progressObj.bytesPerSecond / 1024);
-			updateSplashProgress(percent, `Downloading update... ${percent}% (${speed} KB/s)`, false);
-		});
-
-		autoUpdater.on('update-downloaded', (_info) => {
-			// Update downloaded, installing and restarting
-			updateSplashProgress(100, 'Installing update...', false);
-			// Immediately quit and install the update - no window is created
-			setTimeout(() => {
-				autoUpdater.quitAndInstall(false, true);
-			}, 1000);
-		});
-	}
+	autoUpdater.on('update-downloaded', () => {
+		updateSplashProgress(100, 'Installing update...');
+		setTimeout(() => {
+			autoUpdater.quitAndInstall(false, true);
+		}, 1000);
+	});
 };
 
-// Check for updates and block until complete
+// Check for updates and handle accordingly
 export const checkForUpdates = async (onComplete: () => void) => {
-	if (SIMULATE_UPDATE) {
-		// Simulate update flow for testing
+	if (process.env.SIMULATE_UPDATE === 'true') {
 		await simulateUpdate(onComplete);
-	} else if (app.isPackaged) {
-		// Check for updates first - window creation is blocked until update check completes
+		return;
+	}
+
+	if (app.isPackaged) {
 		await autoUpdater.checkForUpdates();
 	} else {
-		// In dev mode without simulation, immediately proceed
 		onComplete();
 	}
 };
