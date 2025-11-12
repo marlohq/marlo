@@ -198,59 +198,6 @@ const closeSplash = () => {
 	}
 };
 
-// Track simulation failures
-let simulationHasFailed = false;
-
-// Simulate update process for development testing
-const simulateUpdate = async (onComplete: () => void) => {
-	await createSplashWindow();
-	updateSplashProgress(0, 'Checking for updates...');
-
-	await new Promise((resolve) => setTimeout(resolve, 1500));
-	
-	// Fail on first attempt
-	if (!simulationHasFailed) {
-		simulationHasFailed = true;
-		updateSplashProgress(0, 'Update error: Network connection failed', true);
-		
-		// Setup retry and exit handlers
-		const retryHandler = () => {
-			closeSplash();
-			simulateUpdate(onComplete);
-		};
-		
-		const exitHandler = () => {
-			closeSplash();
-			app.quit();
-		};
-		
-		ipcMain.once('update-retry', retryHandler);
-		ipcMain.once('update-exit', exitHandler);
-		
-		splashWindow?.once('closed', () => {
-			ipcMain.removeListener('update-retry', retryHandler);
-			ipcMain.removeListener('update-exit', exitHandler);
-		});
-		
-		return;
-	}
-	
-	updateSplashProgress(0, 'Update found, downloading...');
-
-	// Simulate download progress
-	for (let i = 0; i <= 100; i += 5) {
-		await new Promise((resolve) => setTimeout(resolve, 200));
-		const speed = Math.floor(Math.random() * 2000) + 500;
-		updateSplashProgress(i, `Downloading update... ${i}% (${speed} KB/s)`);
-	}
-
-	updateSplashProgress(100, 'Installing update...');
-	await new Promise((resolve) => setTimeout(resolve, 1500));
-
-	closeSplash();
-	onComplete();
-};
-
 // Setup auto-updater event handlers
 export const setupAutoUpdater = (onComplete: () => void) => {
 	if (!app.isPackaged) return;
@@ -313,11 +260,6 @@ export const setupAutoUpdater = (onComplete: () => void) => {
 
 // Check for updates and handle accordingly
 export const checkForUpdates = async (onComplete: () => void) => {
-	if (process.env.SIMULATE_UPDATE === 'true') {
-		await simulateUpdate(onComplete);
-		return;
-	}
-
 	if (app.isPackaged) {
 		await autoUpdater.checkForUpdates();
 	} else {
