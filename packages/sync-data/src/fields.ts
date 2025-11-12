@@ -58,6 +58,7 @@ export const threadFields = [
 	'trashedAt',
 	'spammedAt',
 	'markedSafeAt',
+	'starredAt',
 	'remindAt',
 	'reminderTriggeredAt',
 	'lastSentAt',

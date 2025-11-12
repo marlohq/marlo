@@ -1,0 +1,2 @@
+ALTER TABLE "Thread" ADD COLUMN "starredAt" timestamp (3) with time zone;--> statement-breakpoint
+CREATE INDEX "Thread_lastSentAt_starredAt_idx" ON "Thread" USING btree ("lastSentAt" timestamptz_ops,"starredAt" timestamptz_ops);

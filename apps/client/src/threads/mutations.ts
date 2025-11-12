@@ -209,3 +209,31 @@ export async function setResolved(threads: ThreadData[], isResolved: boolean) {
 		throw error;
 	}
 }
+
+export async function setStarred(threads: ThreadData[], isStarred: boolean) {
+	const now = new Date().toISOString();
+	if (threads.length === 0) {
+		return;
+	}
+
+	if (threads.length === 1) {
+		// biome-ignore lint/style/noNonNullAssertion: Allowed here.
+		await mutate.threads.update(threads[0]!.id, {
+			starredAt: isStarred ? now : null,
+		});
+	} else {
+		await mutate.threads.bulkUpdate(
+			threads.map((thread) => ({
+				key: thread.id,
+				changes: {
+					starredAt: isStarred ? now : null,
+				},
+			})),
+		);
+	}
+
+	await actions.google.sync({
+		action: { id: isStarred ? 'star:add' : 'star:remove' },
+		remoteThreadIds: threads.map((t) => t.remoteId),
+	});
+}

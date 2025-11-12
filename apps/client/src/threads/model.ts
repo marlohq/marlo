@@ -80,6 +80,10 @@ export class ClientThread {
 		return this.data.markedSafeAt && new Date(this.data.markedSafeAt);
 	}
 
+	get starredAt() {
+		return this.data.starredAt && new Date(this.data.starredAt);
+	}
+
 	href(userEmail: string) {
 		return `https://mail.google.com/mail/?authuser=${encodeURIComponent(userEmail)}#all/${this.data.remoteId}`;
 	}
