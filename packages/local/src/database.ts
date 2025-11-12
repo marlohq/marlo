@@ -399,6 +399,9 @@ export function createDatabaseForAccount(accountId: string) {
 	// 2025-09-25: Trigger resync so we have contact info for all threads.
 	db.version(35).upgrade(triggerFullResync);
 
+	// 2025-11-12: Add starredAt field to threads.
+	db.version(36).upgrade(triggerFullResync);
+
 	return db;
 }
 

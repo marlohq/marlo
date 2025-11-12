@@ -169,6 +169,13 @@
       "when": 1759371524212,
       "tag": "0023_useful_omega_flight",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1762924815419,
+      "tag": "0024_misty_nick_fury",
+      "breakpoints": true
     }
   ]
 }
