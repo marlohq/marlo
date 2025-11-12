@@ -74,7 +74,7 @@ export const GET: APIRoute = async ({ request, params }) => {
 	}
 
 	const headers = new Headers(response.headers);
-	headers.set('Content-Disposition', `attachment; filename="Astro Installer.dmg"`);
+	headers.set('Content-Disposition', `attachment; filename="Marlo Installer.dmg"`);
 	headers.set('Content-Type', 'application/x-apple-diskimage');
 	return new Response(response.body, { status: response.status, headers });
 };
