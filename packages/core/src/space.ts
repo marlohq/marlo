@@ -4,6 +4,10 @@ export const BUILTIN_SPACES = {
 
 export type BuiltInSpaceId = keyof typeof BUILTIN_SPACES;
 
+export function getInboxSpaceId(accountId: string): string {
+	return `inbox_${accountId}`;
+}
+
 export type FilterFieldType = {
 	from: string;
 	to: string;

@@ -24,6 +24,8 @@ import { deleteDraft } from '../../lib/draft.ts';
 import { cn } from '../../lib/util.ts';
 import type { ClientMessage } from '../../models/message.ts';
 import { createMessage, deleteMessage, updateMessage } from '../../threads/mutations.ts';
+import { mutate } from '@workspace/local/mutate.js';
+import { getInboxSpaceId } from '@workspace/core/space.js';
 import { QuoteChip } from '../QuoteExpando.tsx';
 import { BulletListNoDash } from './BulletListNoDash.ts';
 import { ComposerFooter } from './Composer.tsx';
@@ -279,10 +281,13 @@ function useMessageCardComposerEditor({
 				snippet: data.subject,
 			};
 
-			// Step 2: Create local message and delete draft in parallel
+			// Step 2: Create local message, delete draft, and move thread to Priority inbox in parallel
 			await Promise.all([
 				createMessage(message.data.threadId, optimisticMessage),
 				deleteDraft(message.data.threadId, draftMessage.id),
+				mutate.threads.update(message.data.threadId, {
+					spaceId: getInboxSpaceId(message.data.accountId),
+				}),
 			]);
 
 			// Step 3: Send to Gmail API (this happens after local save)
